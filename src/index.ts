@@ -9,6 +9,9 @@ export = (app: Application) => {
     const issueComment = context.issue({ body: 'Thanks for opening this issue!' })
     await context.github.issues.createComment(issueComment)
   })
+  app.on('push', async (context) => {
+    app.log(context)
+  })
   // For more information on building apps:
   // https://probot.github.io/docs/
 
