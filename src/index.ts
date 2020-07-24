@@ -1,5 +1,15 @@
 import { Application } from 'probot' // eslint-disable-line no-unused-vars
 
+class ReleaseInfo{
+  constructor(
+    public name: string,
+    public tag_name: string,
+    public body: string,
+    public draft: boolean,
+    public prerelease: boolean,
+  ){}
+}
+
 export = (app: Application) => {
   app.on('*', async context => {
     context.log({ event: context.event, action: context.payload.action })
