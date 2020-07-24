@@ -25,6 +25,7 @@ export = (app: Application) => {
       app.log('config not found!')
       return
     }
+
     app.log(context)
   })
   // For more information on building apps:
