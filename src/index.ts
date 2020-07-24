@@ -20,6 +20,11 @@ export = (app: Application) => {
     await context.github.issues.createComment(issueComment)
   })
   app.on('push', async (context) => {
+    const config = context.config('auto-release.yml')
+    if (!config){
+      app.log('config not found!')
+      return
+    }
     app.log(context)
   })
   // For more information on building apps:
