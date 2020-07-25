@@ -20,7 +20,7 @@ export = (app: Application) => {
     await context.github.issues.createComment(issueComment)
   })
   app.on('push', async (context) => {
-    const config = await context.config('auto-release.yml')
+    const config = await context.config('auto-release.yml', {})
     if (!config){
       app.log('config not found!')
       return
