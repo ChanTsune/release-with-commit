@@ -30,6 +30,7 @@ export = (app: Application) => {
       app.log('No commits detected!')
       return
     }
+    const headCommit = commits[0]
 
     app.log(context)
   })
