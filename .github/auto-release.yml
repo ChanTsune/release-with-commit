@@ -1,2 +1,6 @@
 version: 0
-prefix: Release
+pushHocks:
+  - commitMessageRegExp: "Release ((\d+[.]?){1,2}\d)\n\n(.)+"
+    releaseTitleTemplate: "Release version {1}"
+    releaseTagTemplate: "v{1}"
+    releaseBodyTemplate: "{3}"
