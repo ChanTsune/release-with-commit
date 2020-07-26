@@ -33,6 +33,7 @@ export = (app: Application) => {
     }
     const headCommit = commits[0]
     const prefix = !!config.prefix ? config.prefix : 'Release'
+    const [messageTitle, longMessage] = parseCommitMessage(headCommit.message)
 
     app.log(context)
   })
