@@ -31,6 +31,7 @@ export = (app: Application) => {
       return
     }
     const headCommit = commits[0]
+    const prefix = !!config.prefix ? config.prefix : 'Release'
 
     app.log(context)
   })
