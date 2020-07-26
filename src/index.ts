@@ -25,6 +25,11 @@ export = (app: Application) => {
       app.log('config not found!')
       return
     }
+    const commits = context.payload.commits
+    if (commits.length == 0){
+      app.log('No commits detected!')
+      return
+    }
 
     app.log(context)
   })
