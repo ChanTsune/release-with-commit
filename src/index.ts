@@ -1,4 +1,5 @@
 import { Application } from 'probot' // eslint-disable-line no-unused-vars
+import { parseCommitMessage, parseCommitTitle } from './utils'
 
 class ReleaseInfo{
   constructor(
