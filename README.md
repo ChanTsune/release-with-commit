@@ -2,17 +2,6 @@
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that A Probot app
 
-## Configuration
-
-```yml
-version: 0
-pushHooks:
-  - commitMessageRegExp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)"
-    releaseTitleTemplate: "Release version {1}"
-    releaseTagTemplate: "v{1}"
-    releaseBodyTemplate: "{3}"
-```
-
 ## Setup
 
 ```sh
