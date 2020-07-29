@@ -1,15 +1,5 @@
 import { Application } from 'probot' // eslint-disable-line no-unused-vars
-import { parseCommitMessage, parseCommitTitle } from './utils'
-
-class ReleaseInfo{
-  constructor(
-    public name: string,
-    public tag_name: string,
-    public body: string,
-    public draft: boolean,
-    public prerelease: boolean,
-  ){}
-}
+import { Config } from './config'
 
 export = (app: Application) => {
   app.on('*', async context => {
@@ -27,14 +17,29 @@ export = (app: Application) => {
       return
     }
     const commits = context.payload.commits
-    if (commits.length == 0){
+    if (commits.length === 0) {
       app.log('No commits detected!')
       return
     }
     const headCommit = commits[0]
-    const prefix = !!config.prefix ? config.prefix : 'Release'
-    const [messageTitle, longMessage] = parseCommitMessage(headCommit.message)
+    const parsedConfig = Config.parse(config)
+    if (!parsedConfig) {
+      return
+    }
+    const releaseInfo = parsedConfig.exec(headCommit.message)
+    if (!releaseInfo) {
+      app.log('Commit message does not matched.')
+      return
+    }
 
+    const release = context.repo(releaseInfo)
+    await context.github.repos.createRelease(release)
+
+    app.log(context)
+  })
+  app.on('pull_request.opened', async (context) => {
+    // await context.github
+    app.log("PR OPENED")
     app.log(context)
   })
   // For more information on building apps:
