@@ -2,7 +2,7 @@
   "name": "auto-merge-bot",
   "version": "1.0.0",
   "private": true,
-  "description": "A Probot app",
+  "description": "Auto Release",
   "author": "ChanTsune <yshegou@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/ChanTsune/auto-merge-bot.git",
