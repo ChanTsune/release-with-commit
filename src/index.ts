@@ -6,10 +6,10 @@ export = (app: Application) => {
     context.log({ event: context.event, action: context.payload.action })
   })
 
-  app.on('issues.opened', async (context) => {
-    const issueComment = context.issue({ body: 'Thanks for opening this issue!' })
-    await context.github.issues.createComment(issueComment)
-  })
+  // app.on('issues.opened', async (context) => {
+  //   const issueComment = context.issue({ body: 'Thanks for opening this issue!' })
+  //   await context.github.issues.createComment(issueComment)
+  // })
   app.on('push', async (context) => {
     const config = await context.config('auto-release.yml') as any
     if (!config){
