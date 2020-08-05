@@ -11,30 +11,30 @@
   "keywords": [
     "github"
   ],
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc && (tsc -w --preserveWatchOutput & nodemon)",
-    "dev": "npm run build:watch",
-    "lint": "standard **/*.ts --fix",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map",
     "test": "jest",
-    "test:lint": "jest && standard **/*.ts",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "pack": "ncc build -m src/index.ts"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "dependencies": {
     "@actions/core": "^1.0.0",
-    "@actions/exec": "^1.0.0",
     "@actions/github": "^2.2.0"
   },
   "devDependencies": {
     "@types/jest": "^25.1.0",
     "@types/nock": "^11.1.0",
-    "@types/node": "^13.1.0",
     "@typescript-eslint/parser": "^2.4.0",
-    "@zeit/ncc": "^0.22.3",
+    "eslint": "^7.5.0",
+    "eslint-plugin-github": "^4.1.1",
+    "eslint-plugin-jest": "^23.18.0",
     "eslint-plugin-typescript": "^0.14.0",
+    "prettier": "2.0.5",
     "jest": "^24.9.0",
-    "nock": "^12.0.0",
     "nodemon": "^2.0.0",
     "standard": "^14.3.1",
     "ts-jest": "^25.1.0",
