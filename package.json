@@ -5,9 +5,9 @@
   "description": "Auto Release",
   "author": "ChanTsune <yshegou@gmail.com>",
   "license": "MIT",
-  "repository": "https://github.com/ChanTsune/auto-merge-bot.git",
-  "homepage": "https://github.com/ChanTsune/auto-merge-bot",
-  "bugs": "https://github.com/ChanTsune/auto-merge-bot/issues",
+  "repository": "https://github.com/ChanTsune/auto-release.git",
+  "homepage": "https://github.com/ChanTsune/auto-release",
+  "bugs": "https://github.com/ChanTsune/auto-release/issues",
   "keywords": [
     "github"
   ],
