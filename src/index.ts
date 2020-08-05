@@ -2,7 +2,7 @@ import { Config } from "./config";
 import { getInput } from "@actions/core";
 import { context, GitHub } from "@actions/github";
 
-export = async () => {
+const main = async () => {
   const env = process.env as any;
   const github = new GitHub(env.GITHUB_TOKEN);
   const { owner, repo } = context.repo;
@@ -44,4 +44,6 @@ export = async () => {
   });
 
   console.log(context);
-};
+}
+
+main();

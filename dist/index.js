@@ -24070,7 +24070,7 @@ module.exports = isPlainObject;
 /***/ }),
 
 /***/ 716:
-/***/ (function(module, __unusedexports, __webpack_require__) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
 
@@ -24083,10 +24083,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __webpack_require__(653);
 const core_1 = __webpack_require__(603);
 const github_1 = __webpack_require__(14);
-module.exports = () => __awaiter(void 0, void 0, void 0, function* () {
+const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const env = process.env;
     const github = new github_1.GitHub(env.GITHUB_TOKEN);
     const { owner, repo } = github_1.context.repo;
@@ -24126,6 +24127,7 @@ module.exports = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     console.log(github_1.context);
 });
+main();
 
 
 /***/ }),
