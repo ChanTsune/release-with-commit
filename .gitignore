@@ -4,7 +4,6 @@ npm-debug.log
 !mock-cert.pem
 .env
 coverage
-lib
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,windows,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,windows,node
