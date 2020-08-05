@@ -22,6 +22,7 @@ export = async () => {
     },
   });
   if (!parsedConfig) {
+    console.log('Parse Failed.');
     return;
   }
   const releaseInfo = parsedConfig.exec(headCommit.message);

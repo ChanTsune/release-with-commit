@@ -10673,7 +10673,7 @@ class Config {
         this.pushHook = pushHook;
     }
     exec(commitMessage) {
-        let result = this.pushHook.exec(commitMessage);
+        const result = this.pushHook.exec(commitMessage);
         if (result) {
             return this.pushHook.releaseInfo;
         }
@@ -24092,24 +24092,25 @@ module.exports = () => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = github_1.context.repo;
     const commits = github_1.context.payload.commits;
     if (commits.length === 0) {
-        console.log('No commits detected!');
+        console.log("No commits detected!");
         return;
     }
     const headCommit = commits[0];
     const parsedConfig = config_1.Config.parse({
         pushHook: {
-            commitMessageRegExp: core_1.getInput('commit_message_regexp'),
-            releaseTitleTemplate: core_1.getInput('release_title_template'),
-            releaseTagTemplate: core_1.getInput('release_tag_template'),
-            releaseBodyTemplate: core_1.getInput('release_body_template'),
-        }
+            commitMessageRegExp: core_1.getInput("commit_message_regexp"),
+            releaseTitleTemplate: core_1.getInput("release_title_template"),
+            releaseTagTemplate: core_1.getInput("release_tag_template"),
+            releaseBodyTemplate: core_1.getInput("release_body_template"),
+        },
     });
     if (!parsedConfig) {
+        console.log('Parse Failed.');
         return;
     }
     const releaseInfo = parsedConfig.exec(headCommit.message);
     if (!releaseInfo) {
-        console.log('Commit message does not matched.');
+        console.log("Commit message does not matched.");
         return;
     }
     const commitish = github_1.context.sha;
@@ -24121,7 +24122,7 @@ module.exports = () => __awaiter(void 0, void 0, void 0, function* () {
         body: releaseInfo.body,
         draft: releaseInfo.draft,
         prerelease: releaseInfo.prerelease,
-        target_commitish: commitish
+        target_commitish: commitish,
     });
     console.log(github_1.context);
 });
