@@ -31,7 +31,7 @@ outputs:
     description: 'The URL for uploading assets to the release'
 runs:
   using: 'node12'
-  main: 'lib/index.js'
+  main: 'dist/index.js'
 branding:
   icon: 'tag'
   color: 'gray-dark'
