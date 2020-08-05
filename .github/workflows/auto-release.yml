@@ -8,7 +8,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/auto-release@master
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: npm install
+      - run: npm build
+      - uses: ./
         with:
           commit_message_regexp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)"
           release_title_template: "version {1}"
