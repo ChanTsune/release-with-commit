@@ -5,9 +5,9 @@
   "description": "Auto Release",
   "author": "ChanTsune <yshegou@gmail.com>",
   "license": "MIT",
-  "repository": "https://github.com/ChanTsune/auto-merge-bot.git",
-  "homepage": "https://github.com/ChanTsune/auto-merge-bot",
-  "bugs": "https://github.com/ChanTsune/auto-merge-bot/issues",
+  "repository": "https://github.com/ChanTsune/auto-release.git",
+  "homepage": "https://github.com/ChanTsune/auto-release",
+  "bugs": "https://github.com/ChanTsune/auto-release/issues",
   "keywords": [
     "github"
   ],
@@ -19,7 +19,7 @@
     "test": "jest",
     "test:lint": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "pack": "ncc build"
+    "pack": "ncc build -m src/index.ts"
   },
   "dependencies": {
     "@actions/core": "^1.0.0",
