@@ -24074,6 +24074,25 @@ module.exports = isPlainObject;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -24084,50 +24103,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = __webpack_require__(653);
+const core = __importStar(__webpack_require__(603));
 const core_1 = __webpack_require__(603);
 const github_1 = __webpack_require__(14);
-const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    const env = process.env;
-    const github = new github_1.GitHub(env.GITHUB_TOKEN);
-    const { owner, repo } = github_1.context.repo;
-    const commits = github_1.context.payload.commits;
-    if (commits.length === 0) {
-        console.log("No commits detected!");
-        return;
-    }
-    const headCommit = commits[0];
-    const parsedConfig = config_1.Config.parse({
-        pushHook: {
-            commitMessageRegExp: core_1.getInput("commit_message_regexp"),
-            releaseTitleTemplate: core_1.getInput("release_title_template"),
-            releaseTagTemplate: core_1.getInput("release_tag_template"),
-            releaseBodyTemplate: core_1.getInput("release_body_template"),
-        },
+const config_1 = __webpack_require__(653);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const env = process.env;
+            const github = new github_1.GitHub(env.GITHUB_TOKEN);
+            const { owner, repo } = github_1.context.repo;
+            const commits = github_1.context.payload.commits;
+            if (commits.length === 0) {
+                console.log('No commits detected!');
+                return;
+            }
+            const headCommit = commits[0];
+            const parsedConfig = config_1.Config.parse({
+                pushHook: {
+                    commitMessageRegExp: core_1.getInput('commit_message_regexp'),
+                    releaseTitleTemplate: core_1.getInput('release_title_template'),
+                    releaseTagTemplate: core_1.getInput('release_tag_template'),
+                    releaseBodyTemplate: core_1.getInput('release_body_template'),
+                },
+            });
+            if (!parsedConfig) {
+                console.log('Parse Failed.');
+                return;
+            }
+            const releaseInfo = parsedConfig.exec(headCommit.message);
+            if (!releaseInfo) {
+                console.log('Commit message does not matched.');
+                return;
+            }
+            const commitish = github_1.context.sha;
+            yield github.repos.createRelease({
+                owner,
+                repo,
+                tag_name: releaseInfo.tag_name,
+                name: releaseInfo.name,
+                body: releaseInfo.body,
+                draft: releaseInfo.draft,
+                prerelease: releaseInfo.prerelease,
+                target_commitish: commitish,
+            });
+            console.log(github_1.context);
+        }
+        catch (error) {
+            core.setFailed(error.message);
+        }
     });
-    if (!parsedConfig) {
-        console.log('Parse Failed.');
-        return;
-    }
-    const releaseInfo = parsedConfig.exec(headCommit.message);
-    if (!releaseInfo) {
-        console.log("Commit message does not matched.");
-        return;
-    }
-    const commitish = github_1.context.sha;
-    yield github.repos.createRelease({
-        owner,
-        repo,
-        tag_name: releaseInfo.tag_name,
-        name: releaseInfo.name,
-        body: releaseInfo.body,
-        draft: releaseInfo.draft,
-        prerelease: releaseInfo.prerelease,
-        target_commitish: commitish,
-    });
-    console.log(github_1.context);
-});
-main();
+}
+run();
 
 
 /***/ }),
