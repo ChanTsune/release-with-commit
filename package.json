@@ -4,30 +4,28 @@
   "private": true,
   "description": "Auto Release",
   "author": "ChanTsune <yshegou@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "repository": "https://github.com/ChanTsune/auto-merge-bot.git",
   "homepage": "https://github.com/ChanTsune/auto-merge-bot",
   "bugs": "https://github.com/ChanTsune/auto-merge-bot/issues",
   "keywords": [
-    "probot",
-    "github",
-    "probot-app"
+    "github"
   ],
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc && (tsc -w --preserveWatchOutput & nodemon)",
     "dev": "npm run build:watch",
-    "start": "probot run ./lib/index.js",
     "lint": "standard **/*.ts --fix",
     "test": "jest",
     "test:lint": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
-    "probot": "^9.5.3"
+    "@actions/core": "^1.0.0",
+    "@actions/exec": "^1.0.0",
+    "@actions/github": "^2.2.0"
   },
   "devDependencies": {
-    "@types/js-yaml": "^3.12.5",
     "@types/jest": "^25.1.0",
     "@types/nock": "^11.1.0",
     "@types/node": "^13.1.0",

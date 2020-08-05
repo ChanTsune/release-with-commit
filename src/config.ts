@@ -47,14 +47,12 @@ export class PushHook {
 
 export class Config {
   constructor(
-    public pushHooks: PushHook[]
+    public pushHook: PushHook
   ) {}
   exec(commitMessage:string):ReleaseInfo|null {
-    for(const hook of this.pushHooks){
-      let result = hook.exec(commitMessage)
-      if (result){
-        return hook.releaseInfo
-      }
+    let result = this.pushHook.exec(commitMessage)
+    if (result) {
+      return this.pushHook.releaseInfo
     }
     return null
   }
@@ -66,9 +64,8 @@ export class Config {
   }
 
   private static parseVersion0(config: any): Config {
-    const phs = !!config.pushHooks ? config.pushHooks as any[] : []
-    const pushHooks = phs.map(hook => PushHook.parse(hook))
-    return new Config(pushHooks)
+    const pushHook = PushHook.parse(config)
+    return new Config(pushHook)
   }
 
 }
