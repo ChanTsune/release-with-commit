@@ -5,12 +5,6 @@
 ## Configuration
 
 ```yml
-version: 0
-pushHooks:
-  - commitMessageRegExp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)"
-    releaseTitleTemplate: "Release version {1}"
-    releaseTagTemplate: "v{1}"
-    releaseBodyTemplate: "{3}"
 ```
 
 ## Setup
@@ -21,10 +15,6 @@ npm install
 
 # Run with hot reload
 npm run build:watch
-
-# Compile and run
-npm run build
-npm run start
 ```
 
 ## Contributing
