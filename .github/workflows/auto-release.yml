@@ -16,3 +16,5 @@ jobs:
           release_body_template: "{3}"
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: '${{secrets.GITHUB_TOKEN}}'
