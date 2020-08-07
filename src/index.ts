@@ -20,6 +20,8 @@ async function run(): Promise<void>{
         releaseTitleTemplate: getInput('release_title_template'),
         releaseTagTemplate: getInput('release_tag_template'),
         releaseBodyTemplate: getInput('release_body_template'),
+        draft: getInput('draft'),
+        prerelease: getInput('prerelease'),
     });
     if (!parsedConfig) {
       console.log('Parse Failed.');

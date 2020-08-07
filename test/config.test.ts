@@ -6,6 +6,8 @@ describe('Config', () => {
     releaseTitleTemplate: 'version {1}',
     releaseTagTemplate: 'v{1}',
     releaseBodyTemplate: '{3}',
+    draft: 'false',
+    prerelease: 'false',
   }
 
   test('Config.exec', async (done) => {
@@ -16,6 +18,8 @@ describe('Config', () => {
       expect(releaseInfo.name).toBe("version 1.1.1");
       expect(releaseInfo.tag_name).toBe("v1.1.1");
       expect(releaseInfo.body).toBe("- Add\n - function");
+      expect(releaseInfo.draft).toBe(false);
+      expect(releaseInfo.prerelease).toBe(false);
     }
     done();
   });

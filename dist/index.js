@@ -10645,21 +10645,23 @@ const renderTemplate = (r, text) => arrayLast(r.map((v, i) => {
     return text;
 }));
 class Config {
-    constructor(commitMessageRegExp, releaseTitleTemplate, releaseTagTemplate, releaseBodyTemplate) {
+    constructor(commitMessageRegExp, releaseTitleTemplate, releaseTagTemplate, releaseBodyTemplate, draft, prerelease) {
         this.commitMessageRegExp = commitMessageRegExp;
         this.releaseTitleTemplate = releaseTitleTemplate;
         this.releaseTagTemplate = releaseTagTemplate;
         this.releaseBodyTemplate = releaseBodyTemplate;
+        this.draft = draft;
+        this.prerelease = prerelease;
     }
     exec(commitMessage) {
         const r = this.commitMessageRegExp.exec(commitMessage);
         if (r) {
-            return new releaseInfo_1.ReleaseInfo(renderTemplate(r, this.releaseTitleTemplate), renderTemplate(r, this.releaseTagTemplate), renderTemplate(r, this.releaseBodyTemplate), false, false);
+            return new releaseInfo_1.ReleaseInfo(renderTemplate(r, this.releaseTitleTemplate), renderTemplate(r, this.releaseTagTemplate), renderTemplate(r, this.releaseBodyTemplate), this.draft, this.prerelease);
         }
         return null;
     }
     static parse(hook) {
-        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate);
+        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate, hook.draft === 'true', hook.prerelease === 'true');
     }
 }
 exports.Config = Config;
@@ -24096,6 +24098,8 @@ function run() {
                 releaseTitleTemplate: core_1.getInput('release_title_template'),
                 releaseTagTemplate: core_1.getInput('release_tag_template'),
                 releaseBodyTemplate: core_1.getInput('release_body_template'),
+                draft: core_1.getInput('draft'),
+                prerelease: core_1.getInput('prerelease'),
             });
             if (!parsedConfig) {
                 console.log('Parse Failed.');

@@ -15,7 +15,9 @@ export class Config {
     public commitMessageRegExp: RegExp,
     public releaseTitleTemplate: string,
     public releaseTagTemplate: string,
-    public releaseBodyTemplate: string
+    public releaseBodyTemplate: string,
+    public draft: boolean,
+    public prerelease:boolean,
   ) {}
   exec(commitMessage: string): ReleaseInfo | null {
     const r = this.commitMessageRegExp.exec(commitMessage);
@@ -23,7 +25,9 @@ export class Config {
       return new ReleaseInfo(
           renderTemplate(r, this.releaseTitleTemplate),
           renderTemplate(r, this.releaseTagTemplate),
-          renderTemplate(r, this.releaseBodyTemplate), false, false);
+          renderTemplate(r, this.releaseBodyTemplate),
+          this.draft,
+          this.prerelease);
     }
     return null;
   }
@@ -32,7 +36,9 @@ export class Config {
       new RegExp(hook.commitMessageRegExp, "us"),
       hook.releaseTitleTemplate,
       hook.releaseTagTemplate,
-      hook.releaseBodyTemplate
+      hook.releaseBodyTemplate,
+      hook.draft === 'true',
+      hook.prerelease === 'true',
     );
   }
 }
