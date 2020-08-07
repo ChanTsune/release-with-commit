@@ -17,7 +17,7 @@ async function run(): Promise<void>{
     console.log(JSON.stringify(headCommit));
     console.log(headCommit.message);
 
-    const parsedConfig = Config.parse({
+    const config = Config.parse({
         commitMessageRegExp: getInput('commit_message_regexp'),
         releaseTitleTemplate: getInput('release_title_template'),
         releaseTagTemplate: getInput('release_tag_template'),
@@ -25,11 +25,11 @@ async function run(): Promise<void>{
         draft: getInput('draft'),
         prerelease: getInput('prerelease'),
     });
-    if (!parsedConfig) {
+    if (!config) {
       console.log('Parse Failed.');
       return;
     }
-    const releaseInfo = parsedConfig.exec(headCommit.message);
+    const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       console.log('Commit message does not matched.');
       return;
