@@ -1,6 +1,6 @@
 import { ReleaseInfo } from "./releaseInfo";
 
-const arrayLast = (array: Array<string>) => array[array.length - 1];
+const arrayLast = (array: string[]) => array[array.length - 1];
 
 const renderTemplate = (r: RegExpExecArray, text: string) =>
   arrayLast(
