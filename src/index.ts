@@ -8,13 +8,14 @@ async function run(): Promise<void>{
     const env = process.env as any;
     const github = new GitHub(env.GITHUB_TOKEN);
     const {owner, repo} = context.repo;
-    console.log(JSON.stringify(context.payload.commits));
     const commits = context.payload.commits;
     if (commits.length === 0) {
       console.log('No commits detected!');
       return;
     }
     const headCommit = commits[0];
+    console.log(JSON.stringify(headCommit));
+    console.log(headCommit.message);
 
     const parsedConfig = Config.parse({
         commitMessageRegExp: getInput('commit_message_regexp'),

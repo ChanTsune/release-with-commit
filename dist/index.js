@@ -24087,13 +24087,14 @@ function run() {
             const env = process.env;
             const github = new github_1.GitHub(env.GITHUB_TOKEN);
             const { owner, repo } = github_1.context.repo;
-            console.log(JSON.stringify(github_1.context.payload.commits));
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
                 console.log('No commits detected!');
                 return;
             }
             const headCommit = commits[0];
+            console.log(JSON.stringify(headCommit));
+            console.log(headCommit.message);
             const parsedConfig = config_1.Config.parse({
                 commitMessageRegExp: core_1.getInput('commit_message_regexp'),
                 releaseTitleTemplate: core_1.getInput('release_title_template'),
