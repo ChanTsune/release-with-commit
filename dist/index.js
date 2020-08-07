@@ -24087,6 +24087,7 @@ function run() {
             const env = process.env;
             const github = new github_1.GitHub(env.GITHUB_TOKEN);
             const { owner, repo } = github_1.context.repo;
+            console.log(JSON.stringify(github_1.context.payload));
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
                 console.log('No commits detected!');
