@@ -17,6 +17,12 @@ npm install
 npm run build && npm run package
 ```
 
+## Tests
+
+```sh
+npm run test
+```
+
 ## Contributing
 
 If you have suggestions for how auto-release could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
