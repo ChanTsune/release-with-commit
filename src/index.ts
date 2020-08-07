@@ -16,12 +16,10 @@ async function run(): Promise<void>{
     const headCommit = commits[0];
 
     const parsedConfig = Config.parse({
-      pushHook: {
         commitMessageRegExp: getInput('commit_message_regexp'),
         releaseTitleTemplate: getInput('release_title_template'),
         releaseTagTemplate: getInput('release_tag_template'),
         releaseBodyTemplate: getInput('release_body_template'),
-      },
     });
     if (!parsedConfig) {
       console.log('Parse Failed.');

@@ -10637,57 +10637,29 @@ module.exports._enoent = enoent;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Config = exports.PushHook = void 0;
+exports.Config = void 0;
 const releaseInfo_1 = __webpack_require__(424);
 const arrayLast = (array) => array[array.length - 1];
 const renderTemplate = (r, text) => arrayLast(r.map((v, i) => {
     text = text.replace(`{${i}}`, v);
     return text;
 }));
-class PushHook {
+class Config {
     constructor(commitMessageRegExp, releaseTitleTemplate, releaseTagTemplate, releaseBodyTemplate) {
         this.commitMessageRegExp = commitMessageRegExp;
         this.releaseTitleTemplate = releaseTitleTemplate;
         this.releaseTagTemplate = releaseTagTemplate;
         this.releaseBodyTemplate = releaseBodyTemplate;
-        this.matchResult = null;
     }
     exec(commitMessage) {
-        this.matchResult = this.commitMessageRegExp.exec(commitMessage);
-        return !!this.matchResult;
-    }
-    get releaseInfo() {
-        const r = this.matchResult;
+        const r = this.commitMessageRegExp.exec(commitMessage);
         if (r) {
             return new releaseInfo_1.ReleaseInfo(renderTemplate(r, this.releaseTitleTemplate), renderTemplate(r, this.releaseTagTemplate), renderTemplate(r, this.releaseBodyTemplate), false, false);
         }
         return null;
     }
     static parse(hook) {
-        return new PushHook(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate);
-    }
-}
-exports.PushHook = PushHook;
-class Config {
-    constructor(pushHook) {
-        this.pushHook = pushHook;
-    }
-    exec(commitMessage) {
-        const result = this.pushHook.exec(commitMessage);
-        if (result) {
-            return this.pushHook.releaseInfo;
-        }
-        return null;
-    }
-    static parse(config) {
-        switch (config.version) {
-            default:
-                return Config.parseVersion0(config);
-        }
-    }
-    static parseVersion0(config) {
-        const pushHook = PushHook.parse(config);
-        return new Config(pushHook);
+        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate);
     }
 }
 exports.Config = Config;
@@ -24120,12 +24092,10 @@ function run() {
             }
             const headCommit = commits[0];
             const parsedConfig = config_1.Config.parse({
-                pushHook: {
-                    commitMessageRegExp: core_1.getInput('commit_message_regexp'),
-                    releaseTitleTemplate: core_1.getInput('release_title_template'),
-                    releaseTagTemplate: core_1.getInput('release_tag_template'),
-                    releaseBodyTemplate: core_1.getInput('release_body_template'),
-                },
+                commitMessageRegExp: core_1.getInput('commit_message_regexp'),
+                releaseTitleTemplate: core_1.getInput('release_title_template'),
+                releaseTagTemplate: core_1.getInput('release_tag_template'),
+                releaseBodyTemplate: core_1.getInput('release_body_template'),
             });
             if (!parsedConfig) {
                 console.log('Parse Failed.');

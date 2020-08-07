@@ -10,59 +10,29 @@ const renderTemplate = (r: RegExpExecArray, text: string) =>
     })
   );
 
-export class PushHook {
-  private matchResult: RegExpExecArray | null = null;
+export class Config {
   constructor(
     public commitMessageRegExp: RegExp,
     public releaseTitleTemplate: string,
     public releaseTagTemplate: string,
     public releaseBodyTemplate: string
   ) {}
-  exec(commitMessage: string): boolean {
-    this.matchResult = this.commitMessageRegExp.exec(commitMessage);
-    return !!this.matchResult;
-  }
-  get releaseInfo(): ReleaseInfo | null {
-    const r = this.matchResult;
+  exec(commitMessage: string): ReleaseInfo | null {
+    const r = this.commitMessageRegExp.exec(commitMessage);
     if (r) {
       return new ReleaseInfo(
-        renderTemplate(r, this.releaseTitleTemplate),
-        renderTemplate(r, this.releaseTagTemplate),
-        renderTemplate(r, this.releaseBodyTemplate),
-        false,
-        false
-      );
+          renderTemplate(r, this.releaseTitleTemplate),
+          renderTemplate(r, this.releaseTagTemplate),
+          renderTemplate(r, this.releaseBodyTemplate), false, false);
     }
     return null;
   }
-  static parse(hook: any): PushHook {
-    return new PushHook(
+  static parse(hook: any): Config {
+    return new Config(
       new RegExp(hook.commitMessageRegExp, "us"),
       hook.releaseTitleTemplate,
       hook.releaseTagTemplate,
       hook.releaseBodyTemplate
     );
-  }
-}
-
-export class Config {
-  constructor(public pushHook: PushHook) {}
-  exec(commitMessage: string): ReleaseInfo | null {
-    const result = this.pushHook.exec(commitMessage);
-    if (result) {
-      return this.pushHook.releaseInfo;
-    }
-    return null;
-  }
-  static parse(config: any): Config {
-    switch (config.version) {
-      default:
-        return Config.parseVersion0(config);
-    }
-  }
-
-  private static parseVersion0(config: any): Config {
-    const pushHook = PushHook.parse(config);
-    return new Config(pushHook);
   }
 }
