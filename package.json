@@ -2,7 +2,7 @@
   "name": "auto-release",
   "version": "1.0.0",
   "private": true,
-  "description": "Auto Release",
+  "description": "Auto Release with commit",
   "author": "ChanTsune <yshegou@gmail.com>",
   "license": "MIT",
   "repository": "https://github.com/ChanTsune/auto-release.git",
