@@ -13,8 +13,8 @@
 # Install dependencies
 npm install
 
-# Run with hot reload
-npm run build:watch
+# Build and package
+npm run build && npm run package
 ```
 
 ## Contributing
