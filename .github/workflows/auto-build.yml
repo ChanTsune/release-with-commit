@@ -1,0 +1,36 @@
+name: "Auto Build and commit"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+        'src/**.ts'
+jobs: 
+  run:
+    name: "Auto Build and commit"
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Update source code
+      run: npm run build && npm run package
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v4.4.0
+      with:
+        author_name: GitHub Actions
+        author_email: 41658782+ChanTsune@users.noreply.github.com
+        message: "build commit"
+        add: "dist/*.js"
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
