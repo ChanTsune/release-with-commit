@@ -1,12 +1,12 @@
 import * as core from '@actions/core'
 import {getInput} from '@actions/core';
-import {context, GitHub} from '@actions/github';
+import {context, getOctokit} from '@actions/github';
 import {Config} from './config';
 
 async function run(): Promise<void>{
   try {
     const env = process.env as any;
-    const github = new GitHub(env.GITHUB_TOKEN);
+    const github = getOctokit(env.GITHUB_TOKEN);
     const {owner, repo} = context.repo;
     const commits = context.payload.commits;
     if (commits.length === 0) {
