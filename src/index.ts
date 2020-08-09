@@ -1,16 +1,14 @@
-import * as core from '@actions/core'
-import {getInput} from '@actions/core';
-import {context, getOctokit} from '@actions/github';
-import {Config} from './config';
+import * as core from "@actions/core";
+import { getInput } from "@actions/core";
+import { context, getOctokit } from "@actions/github";
+import { Config } from "./config";
 
-async function run(): Promise<void>{
+export async function main(github: ReturnType<typeof getOctokit>) {
   try {
-    const env = process.env as any;
-    const github = getOctokit(env.GITHUB_TOKEN);
-    const {owner, repo} = context.repo;
+    const { owner, repo } = context.repo;
     const commits = context.payload.commits;
     if (commits.length === 0) {
-      console.log('No commits detected!');
+      console.log("No commits detected!");
       return;
     }
     const headCommit = commits[0];
@@ -18,20 +16,20 @@ async function run(): Promise<void>{
     console.log(headCommit.message);
 
     const config = Config.parse({
-        commitMessageRegExp: getInput('commit_message_regexp'),
-        releaseTitleTemplate: getInput('release_title_template'),
-        releaseTagTemplate: getInput('release_tag_template'),
-        releaseBodyTemplate: getInput('release_body_template'),
-        draft: getInput('draft'),
-        prerelease: getInput('prerelease'),
+      commitMessageRegExp: getInput("commit_message_regexp"),
+      releaseTitleTemplate: getInput("release_title_template"),
+      releaseTagTemplate: getInput("release_tag_template"),
+      releaseBodyTemplate: getInput("release_body_template"),
+      draft: getInput("draft"),
+      prerelease: getInput("prerelease"),
     });
     if (!config) {
-      console.log('Parse Failed.');
+      console.log("Parse Failed.");
       return;
     }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
-      console.log('Commit message does not matched.');
+      console.log("Commit message does not matched.");
       return;
     }
 
@@ -49,8 +47,14 @@ async function run(): Promise<void>{
 
     console.log(context);
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error.message);
   }
+}
+
+async function run(): Promise<void> {
+  const env = process.env as any;
+  const github = getOctokit(env.GITHUB_TOKEN);
+  await main(github);
 }
 
 run();

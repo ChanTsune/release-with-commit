@@ -17,17 +17,18 @@ export class Config {
     public releaseTagTemplate: string,
     public releaseBodyTemplate: string,
     public draft: boolean,
-    public prerelease:boolean,
+    public prerelease: boolean
   ) {}
   exec(commitMessage: string): ReleaseInfo | null {
     const r = this.commitMessageRegExp.exec(commitMessage);
     if (r) {
       return new ReleaseInfo(
-          renderTemplate(r, this.releaseTitleTemplate),
-          renderTemplate(r, this.releaseTagTemplate),
-          renderTemplate(r, this.releaseBodyTemplate),
-          this.draft,
-          this.prerelease);
+        renderTemplate(r, this.releaseTitleTemplate),
+        renderTemplate(r, this.releaseTagTemplate),
+        renderTemplate(r, this.releaseBodyTemplate),
+        this.draft,
+        this.prerelease
+      );
     }
     return null;
   }
@@ -37,8 +38,8 @@ export class Config {
       hook.releaseTitleTemplate,
       hook.releaseTagTemplate,
       hook.releaseBodyTemplate,
-      hook.draft === 'true',
-      hook.prerelease === 'true',
+      hook.draft === "true",
+      hook.prerelease === "true"
     );
   }
 }
