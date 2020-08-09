@@ -1,10 +1,28 @@
 # auto-release
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that A Probot app
-
 ## Configuration
 
 ```yml
+name: "Auto Release"
+
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ChanTsune/auto-release@master
+        with:
+          commit_message_regexp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)"
+          release_title_template: "version {1}"
+          release_tag_template: "v{1}"
+          release_body_template: "{3}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: '${{secrets.GITHUB_TOKEN}}'
 ```
 
 ## Setup
@@ -31,4 +49,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2020 ChanTsune <yshegou@gmail.com>
+[MIT](LICENSE) © 2020 ChanTsune
