@@ -3440,7 +3440,7 @@ class Config {
         return null;
     }
     static parse(hook) {
-        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate, hook.draft === 'true', hook.prerelease === 'true');
+        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate, hook.draft === "true", hook.prerelease === "true");
     }
 }
 exports.Config = Config;
@@ -3660,39 +3660,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.main = void 0;
 const core = __importStar(__webpack_require__(470));
 const core_1 = __webpack_require__(470);
 const github_1 = __webpack_require__(469);
 const config_1 = __webpack_require__(478);
-function run() {
+function main(github) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const env = process.env;
-            const github = github_1.getOctokit(env.GITHUB_TOKEN);
             const { owner, repo } = github_1.context.repo;
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
-                console.log('No commits detected!');
+                console.log("No commits detected!");
                 return;
             }
             const headCommit = commits[0];
             console.log(JSON.stringify(headCommit));
             console.log(headCommit.message);
             const config = config_1.Config.parse({
-                commitMessageRegExp: core_1.getInput('commit_message_regexp'),
-                releaseTitleTemplate: core_1.getInput('release_title_template'),
-                releaseTagTemplate: core_1.getInput('release_tag_template'),
-                releaseBodyTemplate: core_1.getInput('release_body_template'),
-                draft: core_1.getInput('draft'),
-                prerelease: core_1.getInput('prerelease'),
+                commitMessageRegExp: core_1.getInput("commit_message_regexp"),
+                releaseTitleTemplate: core_1.getInput("release_title_template"),
+                releaseTagTemplate: core_1.getInput("release_tag_template"),
+                releaseBodyTemplate: core_1.getInput("release_body_template"),
+                draft: core_1.getInput("draft"),
+                prerelease: core_1.getInput("prerelease"),
             });
             if (!config) {
-                console.log('Parse Failed.');
+                console.log("Parse Failed.");
                 return;
             }
             const releaseInfo = config.exec(headCommit.message);
             if (!releaseInfo) {
-                console.log('Commit message does not matched.');
+                console.log("Commit message does not matched.");
                 return;
             }
             const commitish = github_1.context.sha;
@@ -3711,6 +3710,14 @@ function run() {
         catch (error) {
             core.setFailed(error.message);
         }
+    });
+}
+exports.main = main;
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const env = process.env;
+        const github = github_1.getOctokit(env.GITHUB_TOKEN);
+        yield main(github);
     });
 }
 run();
