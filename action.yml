@@ -1,19 +1,25 @@
-name: 'Auto Release'
+name: 'Release with commit'
 description: 'Create a release from a commit message.'
 author: 'ChanTsune'
 inputs:
-  commit_message_regexp:
-    description: 'A release is created when a message matches this regex.'
+  regexp:
+    description: 'The pattern of commit message. Create a release if commit message match this.'
     required: true
-  release_title_template:
-    description: 'The name of the release.'
-    required: true
-  release_tag_template:
-    description: 'tag template.'
-    required: true
-  release_body_template:
-    description: 'Release body template.'
-    required: true
+  regexp_options:
+    description: 'The option of `regexp`.'
+    required: false
+  tag_name:
+    description: 'The name of the tag.'
+    required: false
+  release_name:
+    description: 'The name of the release. For example, `Release v1.0.1`'
+    required: false
+  body:
+    description: 'Text describing the contents of the tag.'
+    required: false
+  body_path:
+    description: 'Path to file with information about the tag.'
+    required: false
   draft:
     description: '`true` to create a draft (unpublished) release, `false` to create a published one. Default: `false`'
     required: false
@@ -22,6 +28,16 @@ inputs:
     description: '`true` to identify the release as a prerelease. `false` to identify the release as a full release. Default: `false`'
     required: false
     default: false
+  commitish:
+    description: 'Any branch or commit SHA the Git tag is created from, unused if the Git tag already exists. Default: SHA of current commit'
+    required: false
+outputs:
+  id:
+    description: 'The ID of the created Release'
+  html_url:
+    description: 'The URL users can navigate to in order to view the release'
+  upload_url:
+    description: 'The URL for uploading assets to the release'
 runs:
   using: 'node12'
   main: 'dist/index.js'
