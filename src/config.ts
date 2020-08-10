@@ -1,45 +1,69 @@
 import { ReleaseInfo } from "./releaseInfo";
+import * as fs from "fs";
 
-const arrayLast = (array: string[]) => array[array.length - 1];
+interface UserConfigParams {
+  regexp: string;
+  regexp_options: string;
+  tag_name: string;
+  release_name: string;
+  body: string;
+  body_path: string;
+  draft: string;
+  prerelease: string;
+  commitish: string;
+}
+interface ConfigExParams {
+  repo: string;
+  owner: string;
+}
 
-const renderTemplate = (r: RegExpExecArray, text: string) =>
-  arrayLast(
-    r.map((v, i) => {
-      text = text.replace(`{${i}}`, v);
-      return text;
-    })
-  );
+export type ConfigParams = UserConfigParams & ConfigExParams;
 
 export class Config {
   constructor(
-    public commitMessageRegExp: RegExp,
-    public releaseTitleTemplate: string,
-    public releaseTagTemplate: string,
-    public releaseBodyTemplate: string,
+    public regexp: RegExp,
+    public release_name: string,
+    public tag_name: string,
+    public body: string,
+    public body_path: string,
     public draft: boolean,
-    public prerelease: boolean
+    public prerelease: boolean,
+    public commitish: string,
+    public repo: string,
+    public owner: string
   ) {}
+  private render(m: string, t: string): string {
+    return m.replace(this.regexp, t);
+  }
   exec(commitMessage: string): ReleaseInfo | null {
-    const r = this.commitMessageRegExp.exec(commitMessage);
-    if (r) {
+    if (this.regexp.test(commitMessage)) {
+      let fileContent: string | undefined;
+      const path = this.render(commitMessage, this.body_path);
+      if (path !== "" && !!path) {
+        fileContent = fs.readFileSync(this.body_path, { encoding: "utf8" });
+      }
       return new ReleaseInfo(
-        renderTemplate(r, this.releaseTitleTemplate),
-        renderTemplate(r, this.releaseTagTemplate),
-        renderTemplate(r, this.releaseBodyTemplate),
+        this.render(commitMessage, this.release_name) || commitMessage,
+        this.render(commitMessage, this.tag_name) || commitMessage,
+        fileContent || this.render(commitMessage, this.body) || commitMessage,
         this.draft,
         this.prerelease
       );
     }
     return null;
   }
-  static parse(hook: any): Config {
+  static parse(params: ConfigParams): Config {
     return new Config(
-      new RegExp(hook.commitMessageRegExp, "us"),
-      hook.releaseTitleTemplate,
-      hook.releaseTagTemplate,
-      hook.releaseBodyTemplate,
-      hook.draft === "true",
-      hook.prerelease === "true"
+      new RegExp(params.regexp, params.regexp_options),
+      params.release_name,
+      params.tag_name,
+      params.body,
+      params.body_path,
+      params.draft === "true",
+      params.prerelease === "true",
+      params.commitish,
+      params.repo,
+      params.owner
     );
   }
 }
