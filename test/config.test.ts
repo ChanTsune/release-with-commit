@@ -1,7 +1,7 @@
 import { Config, ConfigParams } from "../src/config";
 
 describe("Config", () => {
-  const cnf: ConfigParams = {
+  const baseConfig: ConfigParams = {
     regexp: "Release (\\d+([.]\\d+)*)\n*((\\s|\\S)+)",
     regexp_options: "us",
     release_name: "version $1",
@@ -15,7 +15,8 @@ describe("Config", () => {
     owner: "me",
   };
 
-  test("Config.exec", async (done) => {
+  test("Config.exec.with.body", async (done) => {
+    let cnf = baseConfig;
     const config = Config.parse(cnf);
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
     if (!releaseInfo) done();
@@ -25,6 +26,17 @@ describe("Config", () => {
       expect(releaseInfo.body).toBe("- Add\n - function");
       expect(releaseInfo.draft).toBe(false);
       expect(releaseInfo.prerelease).toBe(false);
+    }
+    done();
+  });
+  test("Config.exec.with.body_path", async (done) => {
+    let cnf = baseConfig;
+    cnf.body_path = "test/fixtures/release_body.md";
+    const config = Config.parse(cnf);
+    const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
+    if (!releaseInfo) done();
+    if (releaseInfo) {
+      expect(releaseInfo.body).toBe("# Release Test md\n\n- Test markdown.\n");
     }
     done();
   });
