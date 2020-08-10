@@ -8,7 +8,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     const { owner, repo } = context.repo;
     const commits = context.payload.commits;
     if (commits.length === 0) {
-      console.log("No commits detected!");
+      core.info("No commits detected!");
       return;
     }
     const headCommit = commits[0];
@@ -24,12 +24,12 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       prerelease: getInput("prerelease"),
     });
     if (!config) {
-      console.log("Parse Failed.");
+      core.info("Parse Failed.");
       return;
     }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
-      console.log("Commit message does not matched.");
+      core.info("Commit message does not matched.");
       return;
     }
 
@@ -45,7 +45,6 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       target_commitish: commitish,
     });
 
-    console.log(context);
   } catch (error) {
     core.setFailed(error.message);
   }
