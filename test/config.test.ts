@@ -7,7 +7,7 @@ describe("Config", () => {
     release_name: "version $1",
     tag_name: "v$1",
     body: "$3",
-    body_path: "$3",
+    body_path: "",
     draft: "false",
     prerelease: "false",
     commitish: "master",

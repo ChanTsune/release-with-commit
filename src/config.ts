@@ -25,6 +25,7 @@ export class Config {
     public release_name: string,
     public tag_name: string,
     public body: string,
+    public body_path: string,
     public draft: boolean,
     public prerelease: boolean,
     public commitish: string,
@@ -36,10 +37,15 @@ export class Config {
   }
   exec(commitMessage: string): ReleaseInfo | null {
     if (this.regexp.test(commitMessage)) {
+      let fileContent: string | undefined;
+      const path = this.render(commitMessage, this.body_path);
+      if (path !== "" && !!path) {
+        fileContent = fs.readFileSync(this.body_path, { encoding: "utf8" });
+      }
       return new ReleaseInfo(
         this.render(commitMessage, this.release_name) || commitMessage,
         this.render(commitMessage, this.tag_name) || commitMessage,
-        this.render(commitMessage, this.body) || commitMessage,
+        fileContent || this.render(commitMessage, this.body) || commitMessage,
         this.draft,
         this.prerelease
       );
@@ -47,16 +53,12 @@ export class Config {
     return null;
   }
   static parse(params: ConfigParams): Config {
-    let fileContent: string | undefined;
-    if (params.body_path !== "" && !!params.body_path) {
-      fileContent = fs.readFileSync(params.body_path, { encoding: "utf8" });
-    }
-
     return new Config(
       new RegExp(params.regexp, params.regexp_options),
       params.release_name,
       params.tag_name,
-      fileContent || params.body,
+      params.body,
+      params.body_path,
       params.draft === "true",
       params.prerelease === "true",
       params.commitish,
