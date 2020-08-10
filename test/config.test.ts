@@ -1,13 +1,18 @@
-import { Config } from "../src/config";
+import { Config, ConfigParams } from "../src/config";
 
 describe("Config", () => {
-  let cnf: any = {
-    commitMessageRegExp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)",
-    releaseTitleTemplate: "version {1}",
-    releaseTagTemplate: "v{1}",
-    releaseBodyTemplate: "{3}",
+  const cnf: ConfigParams = {
+    regexp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)",
+    regexp_options: "us",
+    release_name: "version $1",
+    tag_name: "v$1",
+    body: "$3",
+    body_path: "$3",
     draft: "false",
     prerelease: "false",
+    commitish: "master",
+    repo: "release-with-commit",
+    owner: "me",
   };
 
   test("Config.exec", async (done) => {

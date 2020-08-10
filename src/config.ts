@@ -1,14 +1,22 @@
 import { ReleaseInfo } from "./releaseInfo";
 
-const arrayLast = (array: string[]) => array[array.length - 1];
+interface UserConfigParams {
+  regexp: string;
+  regexp_options: string;
+  tag_name: string;
+  release_name: string;
+  body: string;
+  body_path: string;
+  draft: string;
+  prerelease: string;
+  commitish: string;
+}
+interface ConfigExParams {
+  repo: string;
+  owner: string;
+}
 
-const renderTemplate = (r: RegExpExecArray, text: string) =>
-  arrayLast(
-    r.map((v, i) => {
-      text = text.replace(`{${i}}`, v);
-      return text;
-    })
-  );
+export type ConfigParams = UserConfigParams & ConfigExParams;
 
 export class Config {
   constructor(
@@ -19,27 +27,29 @@ export class Config {
     public draft: boolean,
     public prerelease: boolean
   ) {}
+  private render(m: string, t: string): string {
+    return m.replace(this.commitMessageRegExp, t);
+  }
   exec(commitMessage: string): ReleaseInfo | null {
-    const r = this.commitMessageRegExp.exec(commitMessage);
-    if (r) {
+    if (this.commitMessageRegExp.test(commitMessage)) {
       return new ReleaseInfo(
-        renderTemplate(r, this.releaseTitleTemplate),
-        renderTemplate(r, this.releaseTagTemplate),
-        renderTemplate(r, this.releaseBodyTemplate),
+        this.render(commitMessage, this.releaseTitleTemplate),
+        this.render(commitMessage, this.releaseTagTemplate),
+        this.render(commitMessage, this.releaseBodyTemplate),
         this.draft,
         this.prerelease
       );
     }
     return null;
   }
-  static parse(hook: any): Config {
+  static parse(params: ConfigParams): Config {
     return new Config(
-      new RegExp(hook.commitMessageRegExp, "us"),
-      hook.releaseTitleTemplate,
-      hook.releaseTagTemplate,
-      hook.releaseBodyTemplate,
-      hook.draft === "true",
-      hook.prerelease === "true"
+      new RegExp(params.regexp, params.regexp_options),
+      params.release_name,
+      params.tag_name,
+      params.body,
+      params.draft === "true",
+      params.prerelease === "true"
     );
   }
 }
