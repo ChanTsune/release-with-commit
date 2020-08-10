@@ -3415,32 +3415,58 @@ exports.getState = getState;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Config = void 0;
 const releaseInfo_1 = __webpack_require__(418);
-const arrayLast = (array) => array[array.length - 1];
-const renderTemplate = (r, text) => arrayLast(r.map((v, i) => {
-    text = text.replace(`{${i}}`, v);
-    return text;
-}));
+const fs = __importStar(__webpack_require__(747));
 class Config {
-    constructor(commitMessageRegExp, releaseTitleTemplate, releaseTagTemplate, releaseBodyTemplate, draft, prerelease) {
-        this.commitMessageRegExp = commitMessageRegExp;
-        this.releaseTitleTemplate = releaseTitleTemplate;
-        this.releaseTagTemplate = releaseTagTemplate;
-        this.releaseBodyTemplate = releaseBodyTemplate;
+    constructor(regexp, release_name, tag_name, body, body_path, draft, prerelease, commitish, repo, owner) {
+        this.regexp = regexp;
+        this.release_name = release_name;
+        this.tag_name = tag_name;
+        this.body = body;
+        this.body_path = body_path;
         this.draft = draft;
         this.prerelease = prerelease;
+        this.commitish = commitish;
+        this.repo = repo;
+        this.owner = owner;
+    }
+    render(m, t) {
+        return m.replace(this.regexp, t);
     }
     exec(commitMessage) {
-        const r = this.commitMessageRegExp.exec(commitMessage);
-        if (r) {
-            return new releaseInfo_1.ReleaseInfo(renderTemplate(r, this.releaseTitleTemplate), renderTemplate(r, this.releaseTagTemplate), renderTemplate(r, this.releaseBodyTemplate), this.draft, this.prerelease);
+        if (this.regexp.test(commitMessage)) {
+            let fileContent;
+            const path = this.render(commitMessage, this.body_path);
+            if (path !== "" && !!path) {
+                fileContent = fs.readFileSync(this.body_path, { encoding: "utf8" });
+            }
+            return new releaseInfo_1.ReleaseInfo(this.render(commitMessage, this.release_name) || commitMessage, this.render(commitMessage, this.tag_name) || commitMessage, fileContent || this.render(commitMessage, this.body) || commitMessage, this.draft, this.prerelease);
         }
         return null;
     }
-    static parse(hook) {
-        return new Config(new RegExp(hook.commitMessageRegExp, "us"), hook.releaseTitleTemplate, hook.releaseTagTemplate, hook.releaseBodyTemplate, hook.draft === "true", hook.prerelease === "true");
+    static parse(params) {
+        return new Config(new RegExp(params.regexp, params.regexp_options), params.release_name, params.tag_name, params.body, params.body_path, params.draft === "true", params.prerelease === "true", params.commitish, params.repo, params.owner);
     }
 }
 exports.Config = Config;
@@ -3662,7 +3688,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.main = void 0;
 const core = __importStar(__webpack_require__(470));
-const core_1 = __webpack_require__(470);
 const github_1 = __webpack_require__(469);
 const config_1 = __webpack_require__(478);
 function main(github) {
@@ -3677,13 +3702,19 @@ function main(github) {
             const headCommit = commits[0];
             console.log(JSON.stringify(headCommit));
             console.log(headCommit.message);
+            // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
             const config = config_1.Config.parse({
-                commitMessageRegExp: core_1.getInput("commit_message_regexp"),
-                releaseTitleTemplate: core_1.getInput("release_title_template"),
-                releaseTagTemplate: core_1.getInput("release_tag_template"),
-                releaseBodyTemplate: core_1.getInput("release_body_template"),
-                draft: core_1.getInput("draft"),
-                prerelease: core_1.getInput("prerelease"),
+                regexp: core.getInput("regexp", { required: true }),
+                regexp_options: core.getInput("regexp_options", { required: false }),
+                release_name: core.getInput("release_name", { required: false }),
+                tag_name: core.getInput("tag_name", { required: false }),
+                body: core.getInput("body", { required: false }),
+                body_path: core.getInput("body_path", { required: false }),
+                draft: core.getInput("draft", { required: false }),
+                prerelease: core.getInput("prerelease", { required: false }),
+                commitish: core.getInput("commitish", { required: false }) || github_1.context.sha,
+                repo: repo,
+                owner: owner,
             });
             if (!config) {
                 core.info("Parse Failed.");
@@ -3694,8 +3725,10 @@ function main(github) {
                 core.info("Commit message does not matched.");
                 return;
             }
-            const commitish = github_1.context.sha;
-            yield github.repos.createRelease({
+            // Create a release
+            // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
+            // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
+            const createReleaseResponse = yield github.repos.createRelease({
                 owner,
                 repo,
                 tag_name: releaseInfo.tag_name,
@@ -3703,8 +3736,14 @@ function main(github) {
                 body: releaseInfo.body,
                 draft: releaseInfo.draft,
                 prerelease: releaseInfo.prerelease,
-                target_commitish: commitish,
+                target_commitish: config.commitish,
             });
+            // Get the ID, html_url, and upload URL for the created Release from the response
+            const { data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }, } = createReleaseResponse;
+            // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+            core.setOutput("id", releaseId);
+            core.setOutput("html_url", htmlUrl);
+            core.setOutput("upload_url", uploadUrl);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -3715,6 +3754,7 @@ exports.main = main;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const env = process.env;
+        // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
         const github = github_1.getOctokit(env.GITHUB_TOKEN);
         yield main(github);
     });
