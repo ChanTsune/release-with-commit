@@ -3671,7 +3671,7 @@ function main(github) {
             const { owner, repo } = github_1.context.repo;
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
-                console.log("No commits detected!");
+                core.info("No commits detected!");
                 return;
             }
             const headCommit = commits[0];
@@ -3686,12 +3686,12 @@ function main(github) {
                 prerelease: core_1.getInput("prerelease"),
             });
             if (!config) {
-                console.log("Parse Failed.");
+                core.info("Parse Failed.");
                 return;
             }
             const releaseInfo = config.exec(headCommit.message);
             if (!releaseInfo) {
-                console.log("Commit message does not matched.");
+                core.info("Commit message does not matched.");
                 return;
             }
             const commitish = github_1.context.sha;
@@ -3705,7 +3705,6 @@ function main(github) {
                 prerelease: releaseInfo.prerelease,
                 target_commitish: commitish,
             });
-            console.log(github_1.context);
         }
         catch (error) {
             core.setFailed(error.message);
