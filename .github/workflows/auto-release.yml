@@ -8,12 +8,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/release-with-commit@v0.0.0
+      - uses: ChanTsune/release-with-commit@v1.0.0
         with:
-          commit_message_regexp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)"
-          release_title_template: "version {1}"
-          release_tag_template: "v{1}"
-          release_body_template: "{3}"
+          regexp: "Release (\\d+([.]\\d+)*)\n*((\\s|\\S)+)"
+          regexp_options: "us"
+          release_name: "version $1"
+          tag_name: "v$1"
+          body: "$3"
           draft: false
           prerelease: false
         env:

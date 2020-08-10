@@ -2,7 +2,7 @@ import { Config, ConfigParams } from "../src/config";
 
 describe("Config", () => {
   const cnf: ConfigParams = {
-    regexp: "Release ((\\d+[.]?){1,2}\\d)\n\n((\\s|\\S)+)",
+    regexp: "Release (\\d+([.]\\d+)*)\n*((\\s|\\S)+)",
     regexp_options: "us",
     release_name: "version $1",
     tag_name: "v$1",
