@@ -2,12 +2,24 @@ import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Config } from "./config";
 
+function setOutputs(
+  releaseId:string,
+  htmlUrl:string,
+  uploadUrl:string,
+  ) {
+    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+    core.setOutput("id", releaseId);
+    core.setOutput("html_url", htmlUrl);
+    core.setOutput("upload_url", uploadUrl);
+}
+
 export async function main(github: ReturnType<typeof getOctokit>) {
   try {
     const { owner, repo } = context.repo;
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
+      setOutputs("", "", "");
       return;
     }
     const headCommit = commits[0];
@@ -30,11 +42,13 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     });
     if (!config) {
       core.info("Parse Failed.");
+      setOutputs("", "", "");
       return;
     }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       core.info("Commit message does not matched.");
+      setOutputs("", "", "");
       return;
     }
 
@@ -56,10 +70,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl },
     } = createReleaseResponse;
 
-    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core.setOutput("id", releaseId);
-    core.setOutput("html_url", htmlUrl);
-    core.setOutput("upload_url", uploadUrl);
+    setOutputs(releaseId, htmlUrl, uploadUrl);
   } catch (error) {
     core.setFailed(error.message);
   }
