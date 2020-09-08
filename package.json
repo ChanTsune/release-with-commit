@@ -1,13 +1,13 @@
 {
-  "name": "auto-release",
+  "name": "release-with-commit",
   "version": "1.1.0",
   "private": true,
   "description": "Release with commit",
   "author": "ChanTsune <yshegou@gmail.com>",
   "license": "MIT",
-  "repository": "https://github.com/ChanTsune/auto-release.git",
-  "homepage": "https://github.com/ChanTsune/auto-release",
-  "bugs": "https://github.com/ChanTsune/auto-release/issues",
+  "repository": "https://github.com/ChanTsune/release-with-commit.git",
+  "homepage": "https://github.com/ChanTsune/release-with-commit",
+  "bugs": "https://github.com/ChanTsune/release-with-commit/issues",
   "keywords": [
     "github",
     "release"
