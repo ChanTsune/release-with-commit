@@ -3,7 +3,7 @@ import { context, getOctokit } from "@actions/github";
 import { Config } from "./config";
 
 function setOutputs(
-  releaseId:string,
+  releaseId:number,
   htmlUrl:string,
   uploadUrl:string,
   ) {
@@ -19,7 +19,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
-      setOutputs("", "", "");
+      setOutputs(-1, "", "");
       return;
     }
     const headCommit = commits[0];
@@ -42,13 +42,13 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     });
     if (!config) {
       core.info("Parse Failed.");
-      setOutputs("", "", "");
+      setOutputs(-1, "", "");
       return;
     }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       core.info("Commit message does not matched.");
-      setOutputs("", "", "");
+      setOutputs(-1, "", "");
       return;
     }
 
