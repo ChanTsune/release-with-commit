@@ -24,4 +24,4 @@ jobs:
         env:
           CREATED: '${{ steps.create_release.outputs.id }}'
         run: |
-          echo "$CREATED"
+          echo "$CREATED" 
