@@ -3,14 +3,16 @@ import { context, getOctokit } from "@actions/github";
 import { Config } from "./config";
 
 function setOutputs(
-  releaseId:number,
-  htmlUrl:string,
-  uploadUrl:string,
-  ) {
-    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core.setOutput("id", releaseId);
-    core.setOutput("html_url", htmlUrl);
-    core.setOutput("upload_url", uploadUrl);
+  releaseId: number,
+  htmlUrl: string,
+  uploadUrl: string,
+  created: boolean
+) {
+  // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+  core.setOutput("id", releaseId);
+  core.setOutput("html_url", htmlUrl);
+  core.setOutput("upload_url", uploadUrl);
+  core.setOutput("created", created);
 }
 
 export async function main(github: ReturnType<typeof getOctokit>) {
@@ -19,7 +21,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
-      setOutputs(-1, "", "");
+      setOutputs(-1, "", "", false);
       return;
     }
     const headCommit = commits[0];
@@ -42,13 +44,13 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     });
     if (!config) {
       core.info("Parse Failed.");
-      setOutputs(-1, "", "");
+      setOutputs(-1, "", "", false);
       return;
     }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       core.info("Commit message does not matched.");
-      setOutputs(-1, "", "");
+      setOutputs(-1, "", "", false);
       return;
     }
 
@@ -70,7 +72,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl },
     } = createReleaseResponse;
 
-    setOutputs(releaseId, htmlUrl, uploadUrl);
+    setOutputs(releaseId, htmlUrl, uploadUrl, true);
   } catch (error) {
     core.setFailed(error.message);
   }
