@@ -3697,11 +3697,12 @@ exports.main = void 0;
 const core = __importStar(__webpack_require__(470));
 const github_1 = __webpack_require__(469);
 const config_1 = __webpack_require__(478);
-function setOutputs(releaseId, htmlUrl, uploadUrl) {
+function setOutputs(releaseId, htmlUrl, uploadUrl, created) {
     // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
     core.setOutput("id", releaseId);
     core.setOutput("html_url", htmlUrl);
     core.setOutput("upload_url", uploadUrl);
+    core.setOutput("created", created);
 }
 function main(github) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -3710,7 +3711,7 @@ function main(github) {
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
                 core.info("No commits detected!");
-                setOutputs(-1, "", "");
+                setOutputs(-1, "", "", false);
                 return;
             }
             const headCommit = commits[0];
@@ -3732,13 +3733,13 @@ function main(github) {
             });
             if (!config) {
                 core.info("Parse Failed.");
-                setOutputs(-1, "", "");
+                setOutputs(-1, "", "", false);
                 return;
             }
             const releaseInfo = config.exec(headCommit.message);
             if (!releaseInfo) {
                 core.info("Commit message does not matched.");
-                setOutputs(-1, "", "");
+                setOutputs(-1, "", "", false);
                 return;
             }
             // Create a release
@@ -3756,7 +3757,7 @@ function main(github) {
             });
             // Get the ID, html_url, and upload URL for the created Release from the response
             const { data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }, } = createReleaseResponse;
-            setOutputs(releaseId, htmlUrl, uploadUrl);
+            setOutputs(releaseId, htmlUrl, uploadUrl, true);
         }
         catch (error) {
             core.setFailed(error.message);
