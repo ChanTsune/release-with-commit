@@ -43,7 +43,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       owner: owner,
     });
     if (!config) {
-      core.info("Parse Failed.");
+      core.error("Parse Failed.");
       setOutputs(-1, "", "", false);
       return;
     }
