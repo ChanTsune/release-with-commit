@@ -3797,7 +3797,7 @@ function main(github) {
                 owner: owner,
             });
             if (!config) {
-                core.info("Parse Failed.");
+                core.error("Parse Failed.");
                 setOutputs(-1, "", "", false);
                 return;
             }
