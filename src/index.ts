@@ -2,55 +2,31 @@ import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Config } from "./config";
 
-function setOutputs(
-  releaseId: number,
-  htmlUrl: string,
-  uploadUrl: string,
-  created: boolean
+export async function main(
+  github: ReturnType<typeof getOctokit>,
+  config: Config,
+  callback: (
+    releaseId: number,
+    htmlUrl: string,
+    uploadUrl: string,
+    created: boolean
+  ) => void
 ) {
-  // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-  core.setOutput("id", releaseId);
-  core.setOutput("html_url", htmlUrl);
-  core.setOutput("upload_url", uploadUrl);
-  core.setOutput("created", created);
-}
-
-export async function main(github: ReturnType<typeof getOctokit>) {
   try {
-    const { owner, repo } = context.repo;
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
-      setOutputs(-1, "", "", false);
+      callback(-1, "", "", false);
       return;
     }
     const headCommit = commits[0];
     console.log(JSON.stringify(headCommit));
     console.log(headCommit.message);
 
-    // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    const config = Config.parse({
-      regexp: core.getInput("regexp", { required: true }),
-      regexp_options: core.getInput("regexp_options", { required: false }),
-      release_name: core.getInput("release_name", { required: false }),
-      tag_name: core.getInput("tag_name", { required: false }),
-      body: core.getInput("body", { required: false }),
-      body_path: core.getInput("body_path", { required: false }),
-      draft: core.getInput("draft", { required: false }),
-      prerelease: core.getInput("prerelease", { required: false }),
-      commitish: core.getInput("commitish", { required: false }) || context.sha,
-      repo: repo,
-      owner: owner,
-    });
-    if (!config) {
-      core.error("Parse Failed.");
-      setOutputs(-1, "", "", false);
-      return;
-    }
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       core.info("Commit message does not matched.");
-      setOutputs(-1, "", "", false);
+      callback(-1, "", "", false);
       return;
     }
 
@@ -58,8 +34,8 @@ export async function main(github: ReturnType<typeof getOctokit>) {
     // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
     // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
     const createReleaseResponse = await github.repos.createRelease({
-      owner,
-      repo,
+      owner: config.owner,
+      repo: config.repo,
       tag_name: releaseInfo.tag_name,
       name: releaseInfo.name,
       body: releaseInfo.body,
@@ -72,7 +48,7 @@ export async function main(github: ReturnType<typeof getOctokit>) {
       data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl },
     } = createReleaseResponse;
 
-    setOutputs(releaseId, htmlUrl, uploadUrl, true);
+    callback(releaseId, htmlUrl, uploadUrl, true);
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -82,7 +58,31 @@ async function run(): Promise<void> {
   const env = process.env as any;
   // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
   const github = getOctokit(env.GITHUB_TOKEN);
-  await main(github);
+
+  const { owner, repo } = context.repo;
+
+  // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+  const config = Config.parse({
+    regexp: core.getInput("regexp", { required: true }),
+    regexp_options: core.getInput("regexp_options", { required: false }),
+    release_name: core.getInput("release_name", { required: false }),
+    tag_name: core.getInput("tag_name", { required: false }),
+    body: core.getInput("body", { required: false }),
+    body_path: core.getInput("body_path", { required: false }),
+    draft: core.getInput("draft", { required: false }),
+    prerelease: core.getInput("prerelease", { required: false }),
+    commitish: core.getInput("commitish", { required: false }) || context.sha,
+    repo: repo,
+    owner: owner,
+  });
+
+  await main(github, config, (releaseId, htmlUrl, uploadUrl, created) => {
+    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+    core.setOutput("id", releaseId);
+    core.setOutput("html_url", htmlUrl);
+    core.setOutput("upload_url", uploadUrl);
+    core.setOutput("created", created);
+  });
 }
 
 run();
