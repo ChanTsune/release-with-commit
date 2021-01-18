@@ -10,7 +10,8 @@ export async function main(
     htmlUrl: string,
     uploadUrl: string,
     created: boolean
-  ) => void
+  ) => void,
+  failure: (error: any) => void
 ) {
   try {
     const commits = context.payload.commits;
@@ -50,7 +51,7 @@ export async function main(
 
     callback(releaseId, htmlUrl, uploadUrl, true);
   } catch (error) {
-    core.setFailed(error.message);
+    failure(error);
   }
 }
 
@@ -76,13 +77,20 @@ async function run(): Promise<void> {
     owner: owner,
   });
 
-  await main(github, config, (releaseId, htmlUrl, uploadUrl, created) => {
-    // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    core.setOutput("id", releaseId);
-    core.setOutput("html_url", htmlUrl);
-    core.setOutput("upload_url", uploadUrl);
-    core.setOutput("created", created);
-  });
+  await main(
+    github,
+    config,
+    (releaseId, htmlUrl, uploadUrl, created) => {
+      // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+      core.setOutput("id", releaseId);
+      core.setOutput("html_url", htmlUrl);
+      core.setOutput("upload_url", uploadUrl);
+      core.setOutput("created", created);
+    },
+    (error) => {
+      core.setFailed(error);
+    }
+  );
 }
 
 run();
