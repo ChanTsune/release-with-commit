@@ -104,7 +104,7 @@ exports.main = void 0;
 const core = __importStar(__webpack_require__(186));
 const github_1 = __webpack_require__(438);
 const config_1 = __webpack_require__(88);
-function main(github, config, callback) {
+function main(github, config, callback, failure) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const commits = github_1.context.payload.commits;
@@ -140,7 +140,7 @@ function main(github, config, callback) {
             callback(releaseId, htmlUrl, uploadUrl, true);
         }
         catch (error) {
-            core.setFailed(error.message);
+            failure(error);
         }
     });
 }
@@ -171,6 +171,8 @@ function run() {
             core.setOutput("html_url", htmlUrl);
             core.setOutput("upload_url", uploadUrl);
             core.setOutput("created", created);
+        }, (error) => {
+            core.setFailed(error);
         });
     });
 }
