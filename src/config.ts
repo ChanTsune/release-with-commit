@@ -1,7 +1,7 @@
 import { ReleaseInfo } from "./releaseInfo";
 import * as fs from "fs";
 
-interface UserConfigParams {
+interface UserConfigParam {
   regexp: string;
   regexp_options: string;
   tag_name: string;
@@ -12,12 +12,12 @@ interface UserConfigParams {
   prerelease: string;
   commitish: string;
 }
-interface ConfigExParams {
+interface ConfigExParam {
   repo: string;
   owner: string;
 }
 
-export type ConfigParams = UserConfigParams & ConfigExParams;
+export type ConfigParam = UserConfigParam & ConfigExParam;
 
 export class Config {
   constructor(
@@ -52,18 +52,18 @@ export class Config {
     }
     return null;
   }
-  static parse(params: ConfigParams): Config {
+  static parse(param: ConfigParam): Config {
     return new Config(
-      new RegExp(params.regexp, params.regexp_options),
-      params.release_name,
-      params.tag_name,
-      params.body,
-      params.body_path,
-      params.draft === "true",
-      params.prerelease === "true",
-      params.commitish,
-      params.repo,
-      params.owner
+      new RegExp(param.regexp, param.regexp_options),
+      param.release_name,
+      param.tag_name,
+      param.body,
+      param.body_path,
+      param.draft === "true",
+      param.prerelease === "true",
+      param.commitish,
+      param.repo,
+      param.owner
     );
   }
 }

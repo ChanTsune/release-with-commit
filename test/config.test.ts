@@ -1,7 +1,7 @@
-import { Config, ConfigParams } from "../src/config";
+import { Config, ConfigParam } from "../src/config";
 
 describe("Config", () => {
-  const baseConfig: ConfigParams = {
+  const baseConfig: ConfigParam = {
     regexp: "Release (\\d+([.]\\d+)*)\n*((\\s|\\S)+)",
     regexp_options: "us",
     release_name: "version $1",
