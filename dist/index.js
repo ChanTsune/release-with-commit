@@ -57,8 +57,8 @@ class Config {
         }
         return null;
     }
-    static parse(params) {
-        return new Config(new RegExp(params.regexp, params.regexp_options), params.release_name, params.tag_name, params.body, params.body_path, params.draft === "true", params.prerelease === "true", params.commitish, params.repo, params.owner);
+    static parse(param) {
+        return new Config(new RegExp(param.regexp, param.regexp_options), param.release_name, param.tag_name, param.body, param.body_path, param.draft === "true", param.prerelease === "true", param.commitish, param.repo, param.owner);
     }
 }
 exports.Config = Config;
