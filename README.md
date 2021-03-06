@@ -47,11 +47,11 @@ jobs:
     steps:
       - uses: ChanTsune/release-with-commit@v2.0.1
         with:
-          regexp: "Release (\\d+([.]\\d+)*)\n*((\\s|\\S)+)"
+          regexp: "Release ((\\d+([.]\\d+)*)-(alpha|beta|rc)\\d*)((\\s|\\S)*)"
           regexp_options: "us"
           release_name: "version $1"
           tag_name: "v$1"
-          body: "$3"
+          body: "$5"
           draft: false
           prerelease: false
         env:
