@@ -36,7 +36,9 @@ describe("Config", () => {
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
     if (!releaseInfo) done();
     if (releaseInfo) {
-      expect(releaseInfo.body).toBe("# Release Test md\r\n\r\n- Test markdown.\r\n");
+      expect(releaseInfo.body).toBe(
+        "# Release Test md\r\n\r\n- Test markdown.\r\n"
+      );
     }
     done();
   });
