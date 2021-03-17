@@ -37,7 +37,7 @@ describe("Config", () => {
     if (!releaseInfo) done();
     if (releaseInfo) {
       expect(releaseInfo.body).toBe(
-        "# Release Test md\r\n\r\n- Test markdown.\r\n"
+        "# Release Test md\n\n- Test markdown.\n"
       );
     }
     done();
