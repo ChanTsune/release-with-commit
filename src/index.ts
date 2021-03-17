@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Config } from "./config";
+import { ReleaseInfo } from "./releaseInfo";
 
 export async function main(
   github: ReturnType<typeof getOctokit>,
@@ -9,7 +10,8 @@ export async function main(
     releaseId: number,
     htmlUrl: string,
     uploadUrl: string,
-    created: boolean
+    created: boolean,
+    releaseInfo: ReleaseInfo | null
   ) => void,
   failure: (error: any) => void
 ) {
@@ -17,7 +19,7 @@ export async function main(
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
-      callback(-1, "", "", false);
+      callback(-1, "", "", false, null);
       return;
     }
     const headCommit = commits[0];
@@ -27,7 +29,7 @@ export async function main(
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
       core.info("Commit message does not matched.");
-      callback(-1, "", "", false);
+      callback(-1, "", "", false, null);
       return;
     }
 
@@ -49,7 +51,7 @@ export async function main(
       data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl },
     } = createReleaseResponse;
 
-    callback(releaseId, htmlUrl, uploadUrl, true);
+    callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
   } catch (error) {
     failure(error);
   }
@@ -80,12 +82,13 @@ async function run(): Promise<void> {
   await main(
     github,
     config,
-    (releaseId, htmlUrl, uploadUrl, created) => {
+    (releaseId, htmlUrl, uploadUrl, created, releaseInfo) => {
       // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
       core.setOutput("id", releaseId);
       core.setOutput("html_url", htmlUrl);
       core.setOutput("upload_url", uploadUrl);
       core.setOutput("created", created);
+      core.setOutput("tag_name", releaseInfo?.tag_name);
     },
     (error) => {
       core.setFailed(error);
