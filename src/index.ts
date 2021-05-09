@@ -23,8 +23,8 @@ export async function main(
       return;
     }
     const headCommit = commits[0];
-    console.log(JSON.stringify(headCommit));
-    console.log(headCommit.message);
+    core.info(JSON.stringify(headCommit));
+    core.info(headCommit.message);
 
     const releaseInfo = config.exec(headCommit.message);
     if (!releaseInfo) {
@@ -53,6 +53,7 @@ export async function main(
 
     callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
   } catch (error) {
+    core.error(error);
     failure(error);
   }
 }
