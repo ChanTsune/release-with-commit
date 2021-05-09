@@ -114,8 +114,8 @@ function main(github, config, callback, failure) {
                 return;
             }
             const headCommit = commits[0];
-            console.log(JSON.stringify(headCommit));
-            console.log(headCommit.message);
+            core.info(JSON.stringify(headCommit));
+            core.info(headCommit.message);
             const releaseInfo = config.exec(headCommit.message);
             if (!releaseInfo) {
                 core.info("Commit message does not matched.");
@@ -140,6 +140,7 @@ function main(github, config, callback, failure) {
             callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
         }
         catch (error) {
+            core.error(error);
             failure(error);
         }
     });
