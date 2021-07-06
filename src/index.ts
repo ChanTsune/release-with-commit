@@ -36,7 +36,7 @@ export async function main(
     // Create a release
     // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
     // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
-    const createReleaseResponse = await github.repos.createRelease({
+    const createReleaseResponse = await github.rest.repos.createRelease({
       owner: config.owner,
       repo: config.repo,
       tag_name: releaseInfo.tag_name,
