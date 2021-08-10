@@ -15,7 +15,7 @@ describe("Config", () => {
     owner: "me",
   };
 
-  test("Config.exec.with.body", async (done) => {
+  test("Config.exec.with.body", (done) => {
     let cnf = baseConfig;
     const config = Config.parse(cnf);
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
@@ -29,7 +29,7 @@ describe("Config", () => {
     }
     done();
   });
-  test("Config.exec.with.body_path", async (done) => {
+  test("Config.exec.with.body_path", (done) => {
     let cnf = baseConfig;
     cnf.body_path = "test/fixtures/release_body.md";
     const config = Config.parse(cnf);
