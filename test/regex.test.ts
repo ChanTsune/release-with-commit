@@ -2,7 +2,7 @@ describe("Regex Example", () => {
   const regexpString =
     "Release v((\\d+([.]\\d+)*)-(alpha|beta|rc)\\d*)((\\s|\\S)*)";
 
-  test(regexpString, async (done) => {
+  test(regexpString, (done) => {
     class Param {
       constructor(public message: string, public $1: string) {}
     }
