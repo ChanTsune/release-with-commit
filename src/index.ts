@@ -52,7 +52,7 @@ export async function main(
     } = createReleaseResponse;
 
     callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
-  } catch (error) {
+  } catch (error: any) {
     core.error(error);
     failure(error);
   }
