@@ -149,7 +149,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const env = process.env;
         // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-        const github = github_1.getOctokit(env.GITHUB_TOKEN);
+        const github = (0, github_1.getOctokit)(env.GITHUB_TOKEN);
         const { owner, repo } = github_1.context.repo;
         // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
         const config = config_1.Config.parse({
