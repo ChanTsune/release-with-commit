@@ -24,7 +24,7 @@ jobs:
       run: npm run build && npm run package
 
     - name: Commit changes
-      uses: EndBug/add-and-commit@v7.5.0
+      uses: EndBug/add-and-commit@v8.0.1
       with:
         author_name: GitHub Actions
         author_email: 41658782+ChanTsune@users.noreply.github.com
