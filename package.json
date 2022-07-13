@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.4",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^4.33.0",
     "@vercel/ncc": "^0.34.0",
     "eslint": "^8.15.0",
@@ -36,7 +36,7 @@
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
-    "nock": "13.2.4",
+    "nock": "13.2.8",
     "prettier": "2.7.1",
     "standard": "^17.0.0",
     "ts-jest": "^27.1.4",
