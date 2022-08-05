@@ -33,7 +33,7 @@ For more information on these outputs, see the [API Documentation](https://devel
 
 ### Example workflow - release with commit
 
-On every `push` to a commit message matching the `regex`, [create a release](https://developer.github.com/v3/repos/releases/#create-a-release):
+On every `push` to a commit message matching the `regexp`, [create a release](https://developer.github.com/v3/repos/releases/#create-a-release):
 
 ```yaml
 name: Release with commit
