@@ -63,7 +63,7 @@ This will create a [Release](https://help.github.com/en/articles/creating-releas
 
 ## Contributing
 
-We would love you to contribute to `@actions/create-release`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+We would love you to contribute to `@ChanTsune/release-with-commit`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## License
 
