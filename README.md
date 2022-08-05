@@ -33,7 +33,7 @@ For more information on these outputs, see the [API Documentation](https://devel
 
 ### Example workflow - release with commit
 
-On every `push` to a commit message matching the `regex`, [create a release](https://developer.github.com/v3/repos/releases/#create-a-release):
+On every `push` to a commit message matching the `regexp`, [create a release](https://developer.github.com/v3/repos/releases/#create-a-release):
 
 ```yaml
 name: Release with commit
@@ -63,7 +63,7 @@ This will create a [Release](https://help.github.com/en/articles/creating-releas
 
 ## Contributing
 
-We would love you to contribute to `@actions/create-release`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+We would love you to contribute to `@ChanTsune/release-with-commit`, pull requests are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## License
 
