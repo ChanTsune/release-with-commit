@@ -97,79 +97,92 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.main = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const config_1 = __nccwpck_require__(88);
-async function main(github, config, callback, failure) {
-    try {
-        const commits = github_1.context.payload.commits;
-        if (commits.length === 0) {
-            core.info("No commits detected!");
-            callback(-1, "", "", false, null);
-            return;
+function main(github, config, callback, failure) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const commits = github_1.context.payload.commits;
+            if (commits.length === 0) {
+                core.info("No commits detected!");
+                callback(-1, "", "", false, null);
+                return;
+            }
+            const headCommit = commits[0];
+            core.info(JSON.stringify(headCommit));
+            core.info(headCommit.message);
+            const releaseInfo = config.exec(headCommit.message);
+            if (!releaseInfo) {
+                core.info("Commit message does not matched.");
+                callback(-1, "", "", false, null);
+                return;
+            }
+            // Create a release
+            // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
+            // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
+            const createReleaseResponse = yield github.rest.repos.createRelease({
+                owner: config.owner,
+                repo: config.repo,
+                tag_name: releaseInfo.tag_name,
+                name: releaseInfo.name,
+                body: releaseInfo.body,
+                draft: releaseInfo.draft,
+                prerelease: releaseInfo.prerelease,
+                target_commitish: config.commitish,
+            });
+            // Get the ID, html_url, and upload URL for the created Release from the response
+            const { data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }, } = createReleaseResponse;
+            callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
         }
-        const headCommit = commits[0];
-        core.info(JSON.stringify(headCommit));
-        core.info(headCommit.message);
-        const releaseInfo = config.exec(headCommit.message);
-        if (!releaseInfo) {
-            core.info("Commit message does not matched.");
-            callback(-1, "", "", false, null);
-            return;
+        catch (error) {
+            core.error(error);
+            failure(error);
         }
-        // Create a release
-        // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
-        // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
-        const createReleaseResponse = await github.rest.repos.createRelease({
-            owner: config.owner,
-            repo: config.repo,
-            tag_name: releaseInfo.tag_name,
-            name: releaseInfo.name,
-            body: releaseInfo.body,
-            draft: releaseInfo.draft,
-            prerelease: releaseInfo.prerelease,
-            target_commitish: config.commitish,
-        });
-        // Get the ID, html_url, and upload URL for the created Release from the response
-        const { data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }, } = createReleaseResponse;
-        callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
-    }
-    catch (error) {
-        core.error(error);
-        failure(error);
-    }
+    });
 }
 exports.main = main;
-async function run() {
-    const env = process.env;
-    // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-    const github = (0, github_1.getOctokit)(env.GITHUB_TOKEN);
-    const { owner, repo } = github_1.context.repo;
-    // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-    const config = config_1.Config.parse({
-        regexp: core.getInput("regexp", { required: true }),
-        regexp_options: core.getInput("regexp_options", { required: false }),
-        release_name: core.getInput("release_name", { required: false }),
-        tag_name: core.getInput("tag_name", { required: false }),
-        body: core.getInput("body", { required: false }),
-        body_path: core.getInput("body_path", { required: false }),
-        draft: core.getInput("draft", { required: false }),
-        prerelease: core.getInput("prerelease", { required: false }),
-        commitish: core.getInput("commitish", { required: false }) || github_1.context.sha,
-        repo: repo,
-        owner: owner,
-    });
-    await main(github, config, (releaseId, htmlUrl, uploadUrl, created, releaseInfo) => {
-        // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
-        core.setOutput("id", releaseId);
-        core.setOutput("html_url", htmlUrl);
-        core.setOutput("upload_url", uploadUrl);
-        core.setOutput("created", created);
-        core.setOutput("tag_name", releaseInfo?.tag_name);
-    }, (error) => {
-        core.setFailed(error);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const env = process.env;
+        // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
+        const github = (0, github_1.getOctokit)(env.GITHUB_TOKEN);
+        const { owner, repo } = github_1.context.repo;
+        // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+        const config = config_1.Config.parse({
+            regexp: core.getInput("regexp", { required: true }),
+            regexp_options: core.getInput("regexp_options", { required: false }),
+            release_name: core.getInput("release_name", { required: false }),
+            tag_name: core.getInput("tag_name", { required: false }),
+            body: core.getInput("body", { required: false }),
+            body_path: core.getInput("body_path", { required: false }),
+            draft: core.getInput("draft", { required: false }),
+            prerelease: core.getInput("prerelease", { required: false }),
+            commitish: core.getInput("commitish", { required: false }) || github_1.context.sha,
+            repo: repo,
+            owner: owner,
+        });
+        yield main(github, config, (releaseId, htmlUrl, uploadUrl, created, releaseInfo) => {
+            // Set the output variables for use by other actions: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
+            core.setOutput("id", releaseId);
+            core.setOutput("html_url", htmlUrl);
+            core.setOutput("upload_url", uploadUrl);
+            core.setOutput("created", created);
+            core.setOutput("tag_name", releaseInfo === null || releaseInfo === void 0 ? void 0 : releaseInfo.tag_name);
+        }, (error) => {
+            core.setFailed(error);
+        });
     });
 }
 run();
