@@ -157,7 +157,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const env = process.env;
         const githubToken = env.GITHUB_TOKEN;
-        if (githubToken) {
+        if (!githubToken) {
             core.setFailed("GITHUB_TOKEN is not defined.");
             return;
         }
