@@ -156,8 +156,13 @@ exports.main = main;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const env = process.env;
+        const githubToken = env.GITHUB_TOKEN;
+        if (githubToken) {
+            core.setFailed("GITHUB_TOKEN is not defined.");
+            return;
+        }
         // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-        const github = (0, github_1.getOctokit)(env.GITHUB_TOKEN);
+        const github = (0, github_1.getOctokit)(githubToken);
         const { owner, repo } = github_1.context.repo;
         // Get the inputs from the workflow file: https://github.com/actions/toolkit/tree/master/packages/core#inputsoutputs
         const config = config_1.Config.parse({
