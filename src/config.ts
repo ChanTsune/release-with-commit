@@ -8,8 +8,8 @@ interface UserConfigParam {
   release_name: string;
   body: string;
   body_path: string;
-  draft: string;
-  prerelease: string;
+  draft: boolean;
+  prerelease: boolean;
   commitish: string;
 }
 interface ConfigExParam {
@@ -59,8 +59,8 @@ export class Config {
       param.tag_name,
       param.body,
       param.body_path,
-      param.draft === "true",
-      param.prerelease === "true",
+      param.draft,
+      param.prerelease,
       param.commitish,
       param.repo,
       param.owner
