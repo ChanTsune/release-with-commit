@@ -60,8 +60,13 @@ export async function main(
 
 async function run(): Promise<void> {
   const env = process.env as any;
+  const githubToken: string = env.GITHUB_TOKEN;
+  if (!githubToken) {
+    core.setFailed("GITHUB_TOKEN is not defined.");
+    return;
+  }
   // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-  const github = getOctokit(env.GITHUB_TOKEN);
+  const github = getOctokit(githubToken);
 
   const { owner, repo } = context.repo;
 
