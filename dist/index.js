@@ -61,7 +61,7 @@ class Config {
         return null;
     }
     static parse(param) {
-        return new Config(new RegExp(param.regexp, param.regexp_options), param.release_name, param.tag_name, param.body, param.body_path, param.draft === "true", param.prerelease === "true", param.commitish, param.repo, param.owner);
+        return new Config(new RegExp(param.regexp, param.regexp_options), param.release_name, param.tag_name, param.body, param.body_path, param.draft, param.prerelease, param.commitish, param.repo, param.owner);
     }
 }
 exports.Config = Config;
@@ -172,8 +172,8 @@ function run() {
             tag_name: core.getInput("tag_name", { required: false }),
             body: core.getInput("body", { required: false }),
             body_path: core.getInput("body_path", { required: false }),
-            draft: core.getInput("draft", { required: false }),
-            prerelease: core.getInput("prerelease", { required: false }),
+            draft: core.getBooleanInput("draft", { required: false }),
+            prerelease: core.getBooleanInput("prerelease", { required: false }),
             commitish: core.getInput("commitish", { required: false }) || github_1.context.sha,
             repo: repo,
             owner: owner,
