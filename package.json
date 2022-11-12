@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
+    "@types/node": "^16.17.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@vercel/ncc": "^0.34.0",
@@ -56,11 +57,21 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "roots": ["<rootDir>/src/", "<rootDir>/test/"],
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/test/"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.[tj]sx?$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
