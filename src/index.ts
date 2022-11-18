@@ -16,6 +16,7 @@ export async function main(
   failure: (error: any) => void
 ) {
   try {
+    core.startGroup("Checking the commit messages");
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
@@ -32,6 +33,7 @@ export async function main(
       callback(-1, "", "", false, null);
       return;
     }
+    core.endGroup();
 
     // Create a release
     // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
