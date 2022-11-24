@@ -114,6 +114,7 @@ const config_1 = __nccwpck_require__(88);
 function main(github, config, callback, failure) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            core.startGroup("Checking the commit messages");
             const commits = github_1.context.payload.commits;
             if (commits.length === 0) {
                 core.info("No commits detected!");
@@ -129,19 +130,22 @@ function main(github, config, callback, failure) {
                 callback(-1, "", "", false, null);
                 return;
             }
-            // Create a release
-            // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
-            // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
-            const createReleaseResponse = yield github.rest.repos.createRelease({
-                owner: config.owner,
-                repo: config.repo,
-                tag_name: releaseInfo.tag_name,
-                name: releaseInfo.name,
-                body: releaseInfo.body,
-                draft: releaseInfo.draft,
-                prerelease: releaseInfo.prerelease,
-                target_commitish: config.commitish,
-            });
+            core.endGroup();
+            const createReleaseResponse = yield core.group("Create release", () => __awaiter(this, void 0, void 0, function* () {
+                // Create a release
+                // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
+                // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
+                return yield github.rest.repos.createRelease({
+                    owner: config.owner,
+                    repo: config.repo,
+                    tag_name: releaseInfo.tag_name,
+                    name: releaseInfo.name,
+                    body: releaseInfo.body,
+                    draft: releaseInfo.draft,
+                    prerelease: releaseInfo.prerelease,
+                    target_commitish: config.commitish,
+                });
+            }));
             // Get the ID, html_url, and upload URL for the created Release from the response
             const { data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl }, } = createReleaseResponse;
             callback(releaseId, htmlUrl, uploadUrl, true, releaseInfo);
