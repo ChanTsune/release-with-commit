@@ -16,6 +16,7 @@ export async function main(
   failure: (error: any) => void
 ) {
   try {
+    core.startGroup("Checking the commit messages");
     const commits = context.payload.commits;
     if (commits.length === 0) {
       core.info("No commits detected!");
@@ -32,20 +33,26 @@ export async function main(
       callback(-1, "", "", false, null);
       return;
     }
+    core.endGroup();
 
-    // Create a release
-    // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
-    // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
-    const createReleaseResponse = await github.rest.repos.createRelease({
-      owner: config.owner,
-      repo: config.repo,
-      tag_name: releaseInfo.tag_name,
-      name: releaseInfo.name,
-      body: releaseInfo.body,
-      draft: releaseInfo.draft,
-      prerelease: releaseInfo.prerelease,
-      target_commitish: config.commitish,
-    });
+    const createReleaseResponse = await core.group(
+      "Create release",
+      async () => {
+        // Create a release
+        // API Documentation: https://developer.github.com/v3/repos/releases/#create-a-release
+        // Octokit Documentation: https://octokit.github.io/rest.js/#octokit-routes-repos-create-release
+        return await github.rest.repos.createRelease({
+          owner: config.owner,
+          repo: config.repo,
+          tag_name: releaseInfo.tag_name,
+          name: releaseInfo.name,
+          body: releaseInfo.body,
+          draft: releaseInfo.draft,
+          prerelease: releaseInfo.prerelease,
+          target_commitish: config.commitish,
+        });
+      }
+    );
     // Get the ID, html_url, and upload URL for the created Release from the response
     const {
       data: { id: releaseId, html_url: htmlUrl, upload_url: uploadUrl },
