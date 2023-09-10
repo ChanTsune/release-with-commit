@@ -11,9 +11,9 @@ export async function main(
     htmlUrl: string,
     uploadUrl: string,
     created: boolean,
-    releaseInfo: ReleaseInfo | null
+    releaseInfo: ReleaseInfo | null,
   ) => void,
-  failure: (error: any) => void
+  failure: (error: any) => void,
 ) {
   try {
     core.startGroup("Checking the commit messages");
@@ -51,7 +51,7 @@ export async function main(
           prerelease: releaseInfo.prerelease,
           target_commitish: config.commitish,
         });
-      }
+      },
     );
     // Get the ID, html_url, and upload URL for the created Release from the response
     const {
@@ -105,7 +105,7 @@ async function run(): Promise<void> {
     },
     (error) => {
       core.setFailed(error);
-    }
+    },
   );
 }
 

@@ -4,6 +4,6 @@ export class ReleaseInfo {
     public tag_name: string,
     public body: string,
     public draft: boolean,
-    public prerelease: boolean
+    public prerelease: boolean,
   ) {}
 }

@@ -30,7 +30,7 @@ export class Config {
     public prerelease: boolean,
     public commitish: string,
     public repo: string,
-    public owner: string
+    public owner: string,
   ) {}
   private render(m: string, t: string): string {
     return m.replace(this.regexp, t);
@@ -47,7 +47,7 @@ export class Config {
         this.render(commitMessage, this.tag_name) || commitMessage,
         fileContent || this.render(commitMessage, this.body) || commitMessage,
         this.draft,
-        this.prerelease
+        this.prerelease,
       );
     }
     return null;
@@ -63,7 +63,7 @@ export class Config {
       param.prerelease,
       param.commitish,
       param.repo,
-      param.owner
+      param.owner,
     );
   }
 }
