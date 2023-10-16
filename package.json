@@ -1,6 +1,6 @@
 {
   "name": "release-with-commit",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "private": true,
   "description": "Release with commit",
   "author": "ChanTsune <yshegou@gmail.com>",
@@ -23,19 +23,19 @@
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0",
+    "@actions/core": "^1.10.1",
     "@actions/github": "^5.1.1"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
-    "@types/node": "^18.17.0",
+    "@types/node": "^16.17.0",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vercel/ncc": "^0.38.0",
-    "eslint": "^8.48.0",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-jest": "^27.2.3",
-    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-jest": "^27.4.2",
+    "eslint-plugin-prettier": "^5.0.1",
     "jest": "^27.5.1",
     "nock": "13.3.3",
     "prettier": "3.0.3",
@@ -44,7 +44,7 @@
     "typescript": "^4.9.5"
   },
   "engines": {
-    "node": ">= 18.17.0"
+    "node": ">= 16.17.0"
   },
   "standard": {
     "parser": "@typescript-eslint/parser",

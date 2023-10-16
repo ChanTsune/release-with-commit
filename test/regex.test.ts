@@ -4,7 +4,10 @@ describe("Regex Example", () => {
 
   test(regexpString, (done) => {
     class Param {
-      constructor(public message: string, public $1: string) {}
+      constructor(
+        public message: string,
+        public $1: string,
+      ) {}
     }
     const params = [
       new Param("Release v0.0.3-alpha Change to main branch", "0.0.3-alpha"),
