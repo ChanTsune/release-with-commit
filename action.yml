@@ -43,7 +43,7 @@ outputs:
   tag_name:
     description: 'The name of the created tag_name'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'tag'
