@@ -9,6 +9,16 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      jest:
+        patterns:
+          - "jest"
+          - "ts-jest"
+          - "@types/jest"
+      github-sdk:
+        patterns:
+          - "@actions/*"
+          - "@octokit/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
