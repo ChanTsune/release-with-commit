@@ -15,6 +15,11 @@ updates:
           - "jest"
           - "ts-jest"
           - "@types/jest"
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@typescript-eslint/*"
       github-sdk:
         patterns:
           - "@actions/*"
