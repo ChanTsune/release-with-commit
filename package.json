@@ -45,7 +45,7 @@
     "typescript": "^5.8.3"
   },
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 24.0.0"
   },
   "standard": {
     "parser": "@typescript-eslint/parser",
