@@ -41,7 +41,7 @@
     "nock": "14.0.11",
     "prettier": "3.8.1",
     "standard": "^17.1.2",
-    "ts-jest": "^29.4.6",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.9.3"
   },
   "engines": {
