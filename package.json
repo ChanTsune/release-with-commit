@@ -39,7 +39,7 @@
     "jest": "^30.3.0",
     "jest-util": "^30.4.1",
     "nock": "14.0.15",
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "standard": "^17.1.2",
     "ts-jest": "^29.4.9",
     "typescript": "^5.9.3"
