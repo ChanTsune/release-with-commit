@@ -2,6 +2,16 @@
 
 This GitHub Action (written in TypeScript) wraps the [GitHub Release API](https://developer.github.com/v3/repos/releases/), specifically the [Create a Release](https://developer.github.com/v3/repos/releases/#create-a-release) endpoint, to allow you to leverage GitHub Actions to create releases.
 
+## What makes this different
+
+Most release actions either expect you to push a tag first, or they assume you are already using a commit-message convention like Conventional Commits.
+
+This action is meant for a smaller, simpler case: “when the latest commit message looks like a release commit, create a release from it.”
+
+* Triggered by the commit message — on each push, the action checks the head commit message against the regexp you provide. If it matches, a release is created. If not, nothing happens. You do not need to push a tag separately.
+* Use regex captures in the release — captured values like $1, $2, and so on can be used in tag_name, release_name, and body, so the commit message can directly shape the release.
+* No required convention — you do not have to use Conventional Commits or set up a release plugin. Pick the pattern that fits your project.
+
 ## Usage
 
 ### Pre-requisites
