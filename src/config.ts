@@ -10,6 +10,7 @@ interface UserConfigParam {
   body_path: string;
   draft: boolean;
   prerelease: boolean;
+  generate_release_notes: boolean;
   commitish: string;
 }
 interface ConfigExParam {
@@ -28,6 +29,7 @@ export class Config {
     public body_path: string,
     public draft: boolean,
     public prerelease: boolean,
+    public generate_release_notes: boolean,
     public commitish: string,
     public repo: string,
     public owner: string,
@@ -42,12 +44,14 @@ export class Config {
       if (path !== "" && !!path) {
         fileContent = fs.readFileSync(this.body_path, { encoding: "utf8" });
       }
+      const fallback = this.generate_release_notes ? undefined : commitMessage;
       return new ReleaseInfo(
-        this.render(commitMessage, this.release_name) || commitMessage,
+        this.render(commitMessage, this.release_name) || fallback,
         this.render(commitMessage, this.tag_name) || commitMessage,
-        fileContent || this.render(commitMessage, this.body) || commitMessage,
+        fileContent || this.render(commitMessage, this.body) || fallback,
         this.draft,
         this.prerelease,
+        this.generate_release_notes,
       );
     }
     return null;
@@ -61,6 +65,7 @@ export class Config {
       param.body_path,
       param.draft,
       param.prerelease,
+      param.generate_release_notes,
       param.commitish,
       param.repo,
       param.owner,

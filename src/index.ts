@@ -49,6 +49,7 @@ export async function main(
           body: releaseInfo.body,
           draft: releaseInfo.draft,
           prerelease: releaseInfo.prerelease,
+          generate_release_notes: releaseInfo.generate_release_notes,
           target_commitish: config.commitish,
         });
       },
@@ -87,6 +88,9 @@ async function run(): Promise<void> {
     body_path: core.getInput("body_path", { required: false }),
     draft: core.getBooleanInput("draft", { required: false }),
     prerelease: core.getBooleanInput("prerelease", { required: false }),
+    generate_release_notes: core.getBooleanInput("generate_release_notes", {
+      required: false,
+    }),
     commitish: core.getInput("commitish", { required: false }) || context.sha,
     repo: repo,
     owner: owner,

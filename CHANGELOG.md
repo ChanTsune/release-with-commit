@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `generate_release_notes` input to let GitHub automatically generate the release name and body.
+
 ## [4.0.1] - 2026-06-29
 
 ### Changed
