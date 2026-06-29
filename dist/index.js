@@ -36560,12 +36560,14 @@ class ReleaseInfo {
     body;
     draft;
     prerelease;
-    constructor(name, tag_name, body, draft, prerelease) {
+    generate_release_notes;
+    constructor(name, tag_name, body, draft, prerelease, generate_release_notes) {
         this.name = name;
         this.tag_name = tag_name;
         this.body = body;
         this.draft = draft;
         this.prerelease = prerelease;
+        this.generate_release_notes = generate_release_notes;
     }
 }
 
@@ -36580,10 +36582,11 @@ class Config {
     body_path;
     draft;
     prerelease;
+    generate_release_notes;
     commitish;
     repo;
     owner;
-    constructor(regexp, release_name, tag_name, body, body_path, draft, prerelease, commitish, repo, owner) {
+    constructor(regexp, release_name, tag_name, body, body_path, draft, prerelease, generate_release_notes, commitish, repo, owner) {
         this.regexp = regexp;
         this.release_name = release_name;
         this.tag_name = tag_name;
@@ -36591,6 +36594,7 @@ class Config {
         this.body_path = body_path;
         this.draft = draft;
         this.prerelease = prerelease;
+        this.generate_release_notes = generate_release_notes;
         this.commitish = commitish;
         this.repo = repo;
         this.owner = owner;
@@ -36605,12 +36609,13 @@ class Config {
             if (path !== "" && !!path) {
                 fileContent = external_fs_namespaceObject.readFileSync(this.body_path, { encoding: "utf8" });
             }
-            return new ReleaseInfo(this.render(commitMessage, this.release_name) || commitMessage, this.render(commitMessage, this.tag_name) || commitMessage, fileContent || this.render(commitMessage, this.body) || commitMessage, this.draft, this.prerelease);
+            const fallback = this.generate_release_notes ? undefined : commitMessage;
+            return new ReleaseInfo(this.render(commitMessage, this.release_name) || fallback, this.render(commitMessage, this.tag_name) || commitMessage, fileContent || this.render(commitMessage, this.body) || fallback, this.draft, this.prerelease, this.generate_release_notes);
         }
         return null;
     }
     static parse(param) {
-        return new Config(new RegExp(param.regexp, param.regexp_options), param.release_name, param.tag_name, param.body, param.body_path, param.draft, param.prerelease, param.commitish, param.repo, param.owner);
+        return new Config(new RegExp(param.regexp, param.regexp_options), param.release_name, param.tag_name, param.body, param.body_path, param.draft, param.prerelease, param.generate_release_notes, param.commitish, param.repo, param.owner);
     }
 }
 
@@ -36649,6 +36654,7 @@ async function main(github, config, callback, failure) {
                 body: releaseInfo.body,
                 draft: releaseInfo.draft,
                 prerelease: releaseInfo.prerelease,
+                generate_release_notes: releaseInfo.generate_release_notes,
                 target_commitish: config.commitish,
             });
         });
@@ -36681,6 +36687,9 @@ async function run() {
         body_path: getInput("body_path", { required: false }),
         draft: getBooleanInput("draft", { required: false }),
         prerelease: getBooleanInput("prerelease", { required: false }),
+        generate_release_notes: getBooleanInput("generate_release_notes", {
+            required: false,
+        }),
         commitish: getInput("commitish", { required: false }) || github_context.sha,
         repo: repo,
         owner: owner,
