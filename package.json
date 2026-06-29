@@ -1,6 +1,6 @@
 {
   "name": "release-with-commit",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": true,
   "description": "Release with commit",
   "author": "ChanTsune <yshegou@gmail.com>",
