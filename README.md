@@ -47,7 +47,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: ChanTsune/release-with-commit@v2.8.0
+      - uses: ChanTsune/release-with-commit@v4.0.1
         with:
           regexp: "Release ((\\d+([.]\\d+)*)-(alpha|beta|rc)\\d*)((\\s|\\S)*)"
           regexp_options: "us"
