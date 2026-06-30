@@ -1,5 +1,5 @@
 name: 'Release with commit'
-description: 'Create a release from a commit message.'
+description: 'GitHub Action that creates a GitHub Release when a commit message matches your regular expression.'
 author: 'ChanTsune'
 inputs:
   regexp:
