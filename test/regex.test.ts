@@ -2,7 +2,7 @@ describe("Regex Example", () => {
   const regexpString =
     "Release v((\\d+([.]\\d+)*)-(alpha|beta|rc)\\d*)((\\s|\\S)*)";
 
-  test(regexpString, (done) => {
+  test(regexpString, () => {
     class Param {
       constructor(
         public message: string,
@@ -16,11 +16,7 @@ describe("Regex Example", () => {
     ];
     const regexp = new RegExp(regexpString, "us");
     for (const p of params) {
-      if (p.message.replace(regexp, "$1") !== p.$1) {
-        done.fail(p.message);
-        break;
-      }
+      expect(p.message.replace(regexp, "$1")).toBe(p.$1);
     }
-    done();
   });
 });
