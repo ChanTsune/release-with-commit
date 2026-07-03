@@ -16,11 +16,10 @@ describe("Config", () => {
     owner: "me",
   };
 
-  test("Config.exec.with.body", (done) => {
+  test("Config.exec.with.body", () => {
     let cnf = baseConfig;
     const config = Config.parse(cnf);
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
-    if (!releaseInfo) done();
     if (releaseInfo) {
       expect(releaseInfo.name).toBe("version 1.1.1");
       expect(releaseInfo.tag_name).toBe("v1.1.1");
@@ -28,20 +27,17 @@ describe("Config", () => {
       expect(releaseInfo.draft).toBe(false);
       expect(releaseInfo.prerelease).toBe(false);
     }
-    done();
   });
-  test("Config.exec.with.body_path", (done) => {
+  test("Config.exec.with.body_path", () => {
     let cnf = baseConfig;
     cnf.body_path = "test/fixtures/release_body.md";
     const config = Config.parse(cnf);
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
-    if (!releaseInfo) done();
     if (releaseInfo) {
       expect(releaseInfo.body).toBe("# Release Test md\n\n- Test markdown.\n");
     }
-    done();
   });
-  test("Config.exec.generate_release_notes.unspecified.uses.autogen", (done) => {
+  test("Config.exec.generate_release_notes.unspecified.uses.autogen", () => {
     const config = Config.parse({
       ...baseConfig,
       release_name: "",
@@ -50,16 +46,14 @@ describe("Config", () => {
       generate_release_notes: true,
     });
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
-    if (!releaseInfo) done();
     if (releaseInfo) {
       expect(releaseInfo.name).toBeUndefined();
       expect(releaseInfo.body).toBeUndefined();
       expect(releaseInfo.tag_name).toBe("v1.1.1");
       expect(releaseInfo.generate_release_notes).toBe(true);
     }
-    done();
   });
-  test("Config.exec.generate_release_notes.respects.specified", (done) => {
+  test("Config.exec.generate_release_notes.respects.specified", () => {
     const config = Config.parse({
       ...baseConfig,
       release_name: "version $1",
@@ -68,12 +62,10 @@ describe("Config", () => {
       generate_release_notes: true,
     });
     const releaseInfo = config.exec("Release 1.1.1\n\n- Add\n - function");
-    if (!releaseInfo) done();
     if (releaseInfo) {
       expect(releaseInfo.name).toBe("version 1.1.1");
       expect(releaseInfo.body).toBe("- Add\n - function");
       expect(releaseInfo.generate_release_notes).toBe(true);
     }
-    done();
   });
 });

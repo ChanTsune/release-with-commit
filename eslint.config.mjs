@@ -1,4 +1,3 @@
-import jestPlugin from "eslint-plugin-jest";
 import prettierRecommended from "eslint-plugin-prettier/recommended";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
@@ -23,19 +22,14 @@ export default [
         beforeEach: "readonly",
         describe: "readonly",
         expect: "readonly",
-        fit: "readonly",
         it: "readonly",
-        jest: "readonly",
         process: "readonly",
         test: "readonly",
-        xdescribe: "readonly",
-        xit: "readonly",
-        xtest: "readonly",
+        vi: "readonly",
       },
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
-      jest: jestPlugin,
     },
   },
   prettierRecommended,
